@@ -17,8 +17,9 @@ service UserAPI_v1{
 
 // Create
 enum Role {
-    USER = 0;    // Роль "user"
-    ADMIN = 1;   // Роль "admin"
+    UNKNOWN = 0;
+    USER = 1;    
+    ADMIN = 2;   
 }
 
 message CreateRequest {
