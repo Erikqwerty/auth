@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package note_v1;
+package UserAPI_v1;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
