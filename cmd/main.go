@@ -14,26 +14,32 @@ import (
 
 const grpcPort = 50052
 
-type auth struct {
+// Auth используется для реализации сервера gRPC, который предоставляет методы, описанные в UserAPIV1.
+type Auth struct {
 	desc.UnimplementedUserAPIV1Server
 }
 
-func (a *auth) Create(_ context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
+// Create cоздание нового пользователя в системе
+func (a *Auth) Create(_ context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 	log.Printf("Создание нового пользователя в системе: %v, %v, %v, %v, %v", req.Name, req.Email, req.Password, req.PasswordConfirm, req.Role)
 	return nil, nil
 }
 
-func (a *auth) Get(_ context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
+// Get Получение информации о пользователе по его идентификатору
+func (a *Auth) Get(_ context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
 	log.Printf("Получение информации о пользователе по его идентификатору: %v", req.Id)
 	return nil, nil
 }
-func (a *auth) Update(_ context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
+
+// Update Обновление информации о пользователе по его идентификатору
+func (a *Auth) Update(_ context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
 	log.Printf("Обновление информации о пользователе по его идентификатору %v", req)
 	return nil, nil
 }
 
-func (a *auth) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
-	log.Printf("Eдаление пользователя из системы по его идентификатору: %v", req.Id)
+// Delete Удаление пользователя из системы по его идентификатору
+func (a *Auth) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
+	log.Printf("Удаление пользователя из системы по его идентификатору: %v", req.Id)
 	return nil, nil
 }
 
@@ -45,7 +51,7 @@ func main() {
 
 	s := grpc.NewServer()
 	reflection.Register(s)
-	desc.RegisterUserAPIV1Server(s, &auth{})
+	desc.RegisterUserAPIV1Server(s, &Auth{})
 
 	log.Printf("server listening at :%v", grpcPort)
 
