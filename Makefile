@@ -21,9 +21,9 @@ generate:
 
 generate-user-api:
 	mkdir -p pkg/UserAPI_v1
-	protoc --proto_path api/UserAPI_v1 \
-	--go_out=pkg/UserAPI_v1 --go_opt=paths=source_relative \
+	protoc --proto_path api/userapi_v1 \
+	--go_out=pkg/userapi_v1 --go_opt=paths=source_relative \
 	--plugin=protoc-gen-go=bin/protoc-gen-go \
-	--go-grpc_out=pkg/UserAPI_v1 --go-grpc_opt=paths=source_relative \
+	--go-grpc_out=pkg/userapi_v1 --go-grpc_opt=paths=source_relative \
 	--plugin=protoc-gen-go-grpc=bin/protoc-gen-go-grpc \
-	api/UserAPI_v1/UserAPI_v1.proto
+	api/userapi_v1/userapi.proto

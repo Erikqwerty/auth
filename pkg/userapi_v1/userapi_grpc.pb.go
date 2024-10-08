@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v5.27.3
-// source: UserAPI_v1.proto
+// source: userapi.proto
 
-package UserAPI_v1
+package userapi_v1
 
 import (
 	context "context"
@@ -39,7 +39,7 @@ func NewUserAPIV1Client(cc grpc.ClientConnInterface) UserAPIV1Client {
 
 func (c *userAPIV1Client) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
 	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/UserAPI_v1.UserAPI_v1/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *userAPIV1Client) Create(ctx context.Context, in *CreateRequest, opts ..
 
 func (c *userAPIV1Client) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
 	out := new(GetResponse)
-	err := c.cc.Invoke(ctx, "/UserAPI_v1.UserAPI_v1/Get", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *userAPIV1Client) Get(ctx context.Context, in *GetRequest, opts ...grpc.
 
 func (c *userAPIV1Client) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/UserAPI_v1.UserAPI_v1/Update", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *userAPIV1Client) Update(ctx context.Context, in *UpdateRequest, opts ..
 
 func (c *userAPIV1Client) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/UserAPI_v1.UserAPI_v1/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +123,7 @@ func _UserAPIV1_Create_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserAPI_v1.UserAPI_v1/Create",
+		FullMethod: "/userapi_v1.UserAPIV1/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserAPIV1Server).Create(ctx, req.(*CreateRequest))
@@ -141,7 +141,7 @@ func _UserAPIV1_Get_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserAPI_v1.UserAPI_v1/Get",
+		FullMethod: "/userapi_v1.UserAPIV1/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserAPIV1Server).Get(ctx, req.(*GetRequest))
@@ -159,7 +159,7 @@ func _UserAPIV1_Update_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserAPI_v1.UserAPI_v1/Update",
+		FullMethod: "/userapi_v1.UserAPIV1/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserAPIV1Server).Update(ctx, req.(*UpdateRequest))
@@ -177,7 +177,7 @@ func _UserAPIV1_Delete_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserAPI_v1.UserAPI_v1/Delete",
+		FullMethod: "/userapi_v1.UserAPIV1/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserAPIV1Server).Delete(ctx, req.(*DeleteRequest))
@@ -189,7 +189,7 @@ func _UserAPIV1_Delete_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UserAPIV1_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "UserAPI_v1.UserAPI_v1",
+	ServiceName: "userapi_v1.UserAPIV1",
 	HandlerType: (*UserAPIV1Server)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -210,5 +210,5 @@ var UserAPIV1_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "UserAPI_v1.proto",
+	Metadata: "userapi.proto",
 }

@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	desc "github.com/erikqwerty/auth/pkg/UserAPI_v1"
+	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/emptypb"
