@@ -20,7 +20,7 @@ generate:
 	make generate-user-api
 
 generate-user-api:
-	mkdir -p pkg/userAPI_v1
+	mkdir -p pkg/UserAPI_v1
 	protoc --proto_path api/UserAPI_v1 \
 	--go_out=pkg/UserAPI_v1 --go_opt=paths=source_relative \
 	--plugin=protoc-gen-go=bin/protoc-gen-go \
