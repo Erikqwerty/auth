@@ -10,7 +10,6 @@ env:
   REGISTRY: "cr.selcloud.ru/qwerty"
   IMAGE_NAME: "auth-server"
   CONTAINER_NAME: "auth-server-container"
-  PORT: "50052"
 
 jobs:
   # Go Job - выполняет билд, тесты и линтинг кода
@@ -88,4 +87,4 @@ jobs:
             docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
             docker stop $CONTAINER_NAME || true
             docker rm $CONTAINER_NAME || true
-            docker run -d -p $PORT:50052 --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
+            docker run -d -p 50052:50052 --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
