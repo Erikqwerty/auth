@@ -10,7 +10,7 @@ env:
   REGISTRY: "cr.selcloud.ru/qwerty"
   IMAGE_NAME: "auth-server"
   CONTAINER_NAME: "auth-server-container"
-  PORT: 8888
+  PORT: "8888"
 
 jobs:
   # Go Job - выполняет билд, тесты и линтинг кода
