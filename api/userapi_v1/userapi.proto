@@ -1,0 +1,82 @@
+syntax = "proto3";  
+
+package userapi_v1;  
+
+import "google/protobuf/empty.proto";       
+import "google/protobuf/timestamp.proto";  
+import "google/protobuf/wrappers.proto";   
+
+option go_package = "github.com/erikqwerty/auth/pkg/userapi_v1;userapi_v1";  
+
+// Определение сервиса UserAPIV1, который содержит 
+// основные RPC методы для управления пользователями
+service UserAPIV1 {
+  // Метод для создания нового пользователя
+  rpc Create(CreateRequest) returns (CreateResponse); 
+  // Метод для получения данных пользователя       
+  rpc Get(GetRequest) returns (GetResponse);     
+  // Метод для обновления данных пользователя           
+  rpc Update(UpdateRequest) returns (google.protobuf.Empty);
+  // Метод для удаления пользователя 
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+}
+
+// Role - перечисление ролей пользователя
+enum Role {
+  ROLE_UNSPECIFIED = 0; // Не указана (по умолчанию)
+  ROLE_USER = 1;        // Обычный пользователь
+  ROLE_ADMIN = 2;       // Администратор
+}
+
+// Сообщение запроса для метода Create (создание пользователя)
+message CreateRequest {
+  string name = 1;                // Имя пользователя
+  
+  // Email пользователя (уникальный для аутентификации)
+  string email = 2;         
+  string password = 3;           // Пароль пользователя
+  string password_confirm = 4;   // Подтверждение пароля
+  Role role = 5;                 // Роль пользователя (USER или ADMIN)
+}
+
+// Сообщение ответа для метода Create (создание пользователя)
+message CreateResponse {
+  int64 id = 1;  // Уникальный идентификатор созданного пользователя
+}
+
+// Сообщение запроса для метода Get (получение данных пользователя)
+message GetRequest {
+  int64 id = 1;  // Идентификатор пользователя, данные которого нужно получить
+}
+
+// Сообщение ответа для метода Get (получение данных пользователя)
+message GetResponse {
+  int64 id = 1;                       // Уникальный идентификатор пользователя
+  string name = 2;                    // Имя пользователя
+  string email = 3;                   // Email пользователя
+  Role role = 4;                      // Роль пользователя (USER или ADMIN)
+
+  // Дата и время создания пользователя
+  google.protobuf.Timestamp created_at = 5; 
+  // Дата и время последнего обновления пользователя
+  google.protobuf.Timestamp updated_at = 6; 
+}
+
+// Сообщение запроса для метода Update (обновление данных пользователя)
+message UpdateRequest {
+  // Идентификатор пользователя, данные которого нужно обновить
+  int64 id = 1;
+  // Имя пользователя (обновляется при необходимости)                     
+  google.protobuf.StringValue name = 2; 
+
+  // Email пользователя (обновление закомментировано не безопасно)
+  // google.protobuf.StringValue email = 3;
+
+  // Роль пользователя (USER или ADMIN)
+  Role role = 4;                    
+}
+
+// Сообщение запроса для метода Delete (удаление пользователя)
+message DeleteRequest {
+  int64 id = 1; // Идентификатор пользователя, которого нужно удалить
+}
