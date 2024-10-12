@@ -15,6 +15,8 @@ services:
       - "${PG_PORT}:5432"
     volumes:
       - postgres_volume:/var/lib/postgresql/data
+    networks:
+      - auth-db-network
 
   migrator:
     build:
@@ -22,4 +24,10 @@ services:
       dockerfile: migration.Dockerfile
     restart: on-failure
     environment:
-      DB_HOST: db
+      DB_HOST: pg
+    networks:
+      - auth-db-network
+
+networks:
+  auth-db-network:
+    driver: bridge
