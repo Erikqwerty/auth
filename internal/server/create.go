@@ -17,7 +17,7 @@ func (a *Auth) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Creat
 
 	err := a.checkReqCreate(ctx, req)
 	if err != nil {
-		return &desc.CreateResponse{Id: 0, Error: err.Error()}, nil
+		return &desc.CreateResponse{Id: 0}, err
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)

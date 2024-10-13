@@ -24,12 +24,12 @@ type PG struct {
 func New(dsn string) (*PG, error) {
 	config, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse dsn: %w", err)
+		return nil, fmt.Errorf("ошибка парсинга dsn: %w", err)
 	}
 
 	pool, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %w", err)
+		return nil, fmt.Errorf("ошибка подключения к database: %w", err)
 	}
 
 	sb := squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)

@@ -2,7 +2,6 @@ package pg
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/erikqwerty/auth/internal/db"
 )
@@ -17,7 +16,7 @@ func (pg *PG) InsertUser(ctx context.Context, user db.User) (int64, error) {
 	// Конвертируем построенный запрос в SQL-строку и список аргументов.
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return 0, fmt.Errorf("failed to build CreateUser query: %w", err)
+		return 0, errSQLtoSring(err)
 	}
 
 	var id int64
@@ -25,7 +24,7 @@ func (pg *PG) InsertUser(ctx context.Context, user db.User) (int64, error) {
 	// Выполняем SQL-запрос и сохраняем возвращенный ID в переменную id.
 	err = pg.pool.QueryRow(ctx, sql, args...).Scan(&id)
 	if err != nil {
-		return 0, fmt.Errorf("failed to execute CreateUser query: %w", err)
+		return 0, errSQLQwery(err)
 	}
 
 	return id, nil
