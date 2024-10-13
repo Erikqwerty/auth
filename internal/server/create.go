@@ -25,14 +25,14 @@ func (a *Auth) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Creat
 		return nil, err
 	}
 
-	localTime, _ := time.LoadLocation("Europe/Moscow")
+	location := time.FixedZone("UTC+3", 3*60*60)
 	user := db.User{
 		Name:         req.Name,
 		Email:        req.Email,
 		PasswordHash: string(hashedPassword),
 		RoleID:       int32(req.Role),
-		CreatedAt:    time.Now().In(localTime),
-		UpdatedAt:    time.Now().In(localTime),
+		CreatedAt:    time.Now().In(location),
+		UpdatedAt:    time.Now().In(location),
 	}
 
 	id, err := a.DB.InsertUser(ctx, user)
