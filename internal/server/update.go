@@ -2,14 +2,23 @@ package server
 
 import (
 	"context"
-	"log"
+	"time"
 
+	"github.com/erikqwerty/auth/internal/db"
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // Update обновление информации о пользователе по его идентификатору
-func (a *Auth) Update(_ context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
-	log.Printf("Обновление информации о пользователе по его идентификатору %v", req)
-	return nil, nil
+func (a *Auth) Update(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
+
+	localTime, _ := time.LoadLocation("Europe/Moscow")
+	err := a.DB.UpdateUser(ctx, db.User{
+		ID:        req.Id,
+		Name:      req.Name.Value,
+		RoleID:    int(req.Role),
+		UpdatedAt: time.Now().In(localTime),
+	})
+
+	return nil, err
 }
