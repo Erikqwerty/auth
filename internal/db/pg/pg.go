@@ -36,22 +36,3 @@ func New(dsn string) (*PG, error) {
 
 	return &PG{pool: pool, sb: sb}, nil
 }
-
-// GetUser - получает информацию о пользователе по его ID.
-// Возвращает структуру db.User и ошибку, если пользователь не найден.
-func (pg *PG) GetUser(_ context.Context, id int64) (*db.User, error) {
-	fmt.Println(id)
-	return &db.User{}, nil
-}
-
-// UpdateUser - обновляет информацию о пользователе в базе данных.
-func (pg *PG) UpdateUser(_ context.Context, user db.User) error {
-	fmt.Println(user)
-	return nil
-}
-
-// DeleteUser - удаляет пользователя из базы данных по его ID.
-func (pg *PG) DeleteUser(_ context.Context, id int64) error {
-	fmt.Println(id)
-	return nil
-}

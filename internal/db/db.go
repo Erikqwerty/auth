@@ -28,8 +28,19 @@ type Role struct {
 // DB - интерфейс для взаимодействия с базой данных.
 // Описывает основные операции CRUD для структуры User.
 type DB interface {
-	CreateUser(ctx context.Context, user User) (int64, error) // Создает нового пользователя и возвращает его ID
-	GetUser(ctx context.Context, id int64) (*User, error)     // Возвращает пользователя по его ID
-	UpdateUser(ctx context.Context, user User) error          // Обновляет данные пользователя
-	DeleteUser(ctx context.Context, id int64) error           // Удаляет пользователя по его ID
+	// InsertUser - создает нового пользователя в базе данных и возвращает его ID.
+	InsertUser(ctx context.Context, user User) (int64, error)
+
+	// SelectUser - получает информацию о пользователе по его ID.
+	// Возвращает структуру db.User и ошибку, если пользователь не найден.
+	SelectUser(ctx context.Context, id int64) (*User, error)
+
+	// UpdateUser - обновляет информацию о пользователе в базе данных.
+	UpdateUser(ctx context.Context, user User) error
+
+	// DeleteUser - удаляет пользователя из базы данных по его ID.
+	DeleteUser(ctx context.Context, id int64) error
+
+	// CheckEmailExists - возвращает true если email есть в базе данных
+	СheckEmailExists(ctx context.Context, email string) (bool, error)
 }
