@@ -13,7 +13,7 @@ type User struct {
 	Name         string    // Имя пользователя
 	Email        string    // Электронная почта пользователя
 	PasswordHash string    // Хеш пароля пользователя
-	RoleID       int       // Идентификатор роли пользователя
+	RoleID       int32     // Идентификатор роли пользователя
 	CreatedAt    time.Time // Время создания записи
 	UpdatedAt    time.Time // Время последнего обновления записи
 }

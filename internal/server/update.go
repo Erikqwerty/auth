@@ -16,7 +16,7 @@ func (a *Auth) Update(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Em
 	err := a.DB.UpdateUser(ctx, db.User{
 		ID:        req.Id,
 		Name:      req.Name.Value,
-		RoleID:    int(req.Role),
+		RoleID:    int32(req.Role),
 		UpdatedAt: time.Now().In(localTime),
 	})
 

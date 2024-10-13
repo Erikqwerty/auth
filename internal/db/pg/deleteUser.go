@@ -11,7 +11,7 @@ import (
 // DeleteUser - удаляет пользователя из базы данных по его ID.
 func (pg *PG) DeleteUser(ctx context.Context, id int64) error {
 
-	status, err := checkIdExists(pg, ctx, id)
+	status, err := checkIDExists(ctx, pg, id)
 	if !status {
 		return fmt.Errorf("пользователя с таким ID не существует")
 	}
@@ -36,8 +36,7 @@ func (pg *PG) DeleteUser(ctx context.Context, id int64) error {
 	return nil
 }
 
-// checkIdExists - возвращает true если id есть в базе данных
-func checkIdExists(pg *PG, ctx context.Context, id int64) (bool, error) {
+func checkIDExists(ctx context.Context, pg *PG, id int64) (bool, error) {
 	query := pg.sb.
 		Select("1").
 		From("users").

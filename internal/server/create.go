@@ -30,7 +30,7 @@ func (a *Auth) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Creat
 		Name:         req.Name,
 		Email:        req.Email,
 		PasswordHash: string(hashedPassword),
-		RoleID:       int(req.Role),
+		RoleID:       int32(req.Role),
 		CreatedAt:    time.Now().In(localTime),
 		UpdatedAt:    time.Now().In(localTime),
 	}

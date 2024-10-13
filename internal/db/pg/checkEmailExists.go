@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx"
 )
 
-// сheckEmailExists - возвращает true если email есть в базе данных
+// СheckEmailExists - возвращает true если email есть в базе данных
 func (pg *PG) СheckEmailExists(ctx context.Context, email string) (bool, error) {
 	query := pg.sb.
 		Select("1").

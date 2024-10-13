@@ -7,7 +7,7 @@ import (
 	"github.com/erikqwerty/auth/internal/db"
 )
 
-// GetUser - получает информацию о пользователе по его ID.
+// SelectUser - получает информацию о пользователе по его ID.
 // Возвращает структуру db.User и ошибку, если пользователь не найден.
 func (pg *PG) SelectUser(ctx context.Context, email string) (*db.User, error) {
 	query := pg.sb.
