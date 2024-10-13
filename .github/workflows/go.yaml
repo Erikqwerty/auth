@@ -1,5 +1,5 @@
 name: CI
-
+# Тест №3 рабочий вариант
 on:
   push:
     branches: [main, master, dev_task_2]
