@@ -18,7 +18,7 @@ func main() {
 
 	auth, err := server.NewAuthApp(configPath)
 	if err != nil {
-		log.Fatalf("Ошибка инициализации приложения %v", err)
+		log.Fatal(err)
 	}
 
 	srv := server.NewServer(auth)
