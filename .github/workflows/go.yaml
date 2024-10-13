@@ -118,10 +118,12 @@ jobs:
             docker stop $DB_CONTAINER_NAME || true
             docker rm $DB_CONTAINER_NAME || true
             docker run -d --name $DB_CONTAINER_NAME \
-              --network auth-service-network \
-              --env-file .env \
-              -p 50062:5432 $DB_IMAGE_NAME
-
+            --network auth-service-network \
+            -e POSTGRES_DB=auth \
+            -e POSTGRES_USER=${{ secrets.PG_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.PG_PASSWORD }} \
+            -p 50062:5432 $DB_IMAGE_NAME
+           
             # Запускаем мигратор
             docker stop auth_migrator || echo "Контейнер auth_migrator не запущен"
             docker rm auth_migrator || echo "Контейнер auth_migrator не существует"
