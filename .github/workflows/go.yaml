@@ -98,6 +98,7 @@ jobs:
           port: 33
           envs: IMAGE_NAME, REGISTRY, GITHUB_SHA, CONTAINER_NAME, DB_CONTAINER_NAME, DB_IMAGE_NAME
           script: |
+            # Создаем файл .env
             echo "PG_DATABASE_NAME=auth" >> .env
             echo "PG_USER=${{ secrets.PG_USER }}" >> .env
             echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
@@ -114,15 +115,18 @@ jobs:
             docker rm $CONTAINER_NAME || true
             docker run -d -p 50052:50052 --network auth-service-network --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
 
-            # Запуск Postgres с параметрами из .env файла
-            docker stop $DB_CONTAINER_NAME || true
-            docker rm $DB_CONTAINER_NAME || true
+            # Запуск или создание контейнера Postgres с постоянным хранилищем
+            if [ $(docker ps -q -f name=$DB_CONTAINER_NAME) ]; then
+            echo "Контейнер базы данных уже запущен"
+            else
             docker run -d --name $DB_CONTAINER_NAME \
             --network auth-service-network \
             -e POSTGRES_DB=auth \
             -e POSTGRES_USER=${{ secrets.PG_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.PG_PASSWORD }} \
+            -v postgres_data:/var/lib/postgresql/data \
             -p 50062:5432 $DB_IMAGE_NAME
+            fi
            
             # Запускаем мигратор
             docker stop auth_migrator || echo "Контейнер auth_migrator не запущен"
@@ -130,3 +134,6 @@ jobs:
             docker run --network auth-service-network --name auth_migrator \
             --env-file .env \
             -e DB_HOST=$DB_CONTAINER_NAME -t $REGISTRY/auth_migrator:$TAG_NAME || echo "Ошибка запуска контейнера миграций"
+          
+            # Удаление старых Docker-образов, которые не используются более одного дня
+            docker image prune -a --filter "until=24h" -f
