@@ -11,4 +11,6 @@ FROM alpine:latest
 WORKDIR /root/
 COPY --from=builder /github.com/erikqwerty/auth/bin/auth_server .
 
+ADD .env .
+
 CMD ["./auth_server"]
