@@ -1,5 +1,5 @@
 name: CI
-# Тест №3 рабочий вариант
+
 on:
   push:
     branches: [main, master, dev_task_2]
@@ -60,6 +60,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Create .env file for CI
+        run: |
+          echo "PG_DATABASE_NAME=auth" >> .env
+          echo "PG_USER=${{ secrets.PG_USER }}" >> .env
+          echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
+          echo "PG_PORT=54321" >> .env
+          echo "MIGRATION_DIR=./migrations" >> .env
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -81,6 +89,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: image-build-and-push  # Выполняется после успешного image-build-and-push
     steps:
+      - name: Create .env file for CI
+        run: |
+          echo "PG_DATABASE_NAME=auth" >> .env
+          echo "PG_USER=${{ secrets.PG_USER }}" >> .env
+          echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
+          echo "PG_PORT=54321" >> .env
+          echo "MIGRATION_DIR=./migrations" >> .env
+          
       - name: Deploy Server Supernova via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -100,18 +116,17 @@ jobs:
             docker rm $CONTAINER_NAME || true
             docker run -d -p 50052:50052 --network auth-service-network --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
 
-            # Запуск Postgres
+            # Запуск Postgres с параметрами из .env файла
             docker stop $DB_CONTAINER_NAME || true
             docker rm $DB_CONTAINER_NAME || true
             docker run -d --name $DB_CONTAINER_NAME \
               --network auth-service-network \
-              -e POSTGRES_DB=auth \
-              -e POSTGRES_USER=auth-user \
-              -e POSTGRES_PASSWORD=auth-password \
+              --env-file .env \
               -p 50062:5432 $DB_IMAGE_NAME
 
             # Запускаем мигратор
             docker stop auth_migrator || echo "Контейнер auth_migrator не запущен"
             docker rm auth_migrator || echo "Контейнер auth_migrator не существует"
             docker run --network auth-service-network --name auth_migrator \
+            --env-file .env \
             -e DB_HOST=$DB_CONTAINER_NAME -t $REGISTRY/auth_migrator:$TAG_NAME || echo "Ошибка запуска контейнера миграций"
