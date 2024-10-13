@@ -2,7 +2,6 @@ package pg
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx"
@@ -18,7 +17,7 @@ func (pg *PG) СheckEmailExists(ctx context.Context, email string) (bool, error)
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return false, fmt.Errorf("ошибка создания строки запроса EmailExists: %w", err)
+		return false, errSQLtoSring(err)
 	}
 
 	var exists int
@@ -27,7 +26,7 @@ func (pg *PG) СheckEmailExists(ctx context.Context, email string) (bool, error)
 		if err == pgx.ErrNoRows {
 			return false, nil
 		}
-		return false, fmt.Errorf("ошибка выполнения запроса в EmailExists: %w", err)
+		return false, errSQLQwery(err)
 	}
 
 	return true, nil
