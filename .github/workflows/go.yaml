@@ -67,7 +67,7 @@ jobs:
           echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
           echo "PG_PORT=54321" >> .env
           echo "MIGRATION_DIR=./migrations" >> .env
-          echo "GRPC_HOST=${{ secrets.SERVER_HOST }}" >> .env
+          echo "GRPC_HOST=0.0.0.0" >> .env
           echo "GRPC_PORT=50052" >> .env
           echo "PG_DSN=host=${{ secrets.SERVER_HOST }} port=50062 dbname=auth user=${{secrets.PG_USER}} password=${{secrets.PG_PASSWORD}} sslmode=disable" >> .env
 
