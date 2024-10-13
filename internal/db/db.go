@@ -33,7 +33,7 @@ type DB interface {
 
 	// SelectUser - получает информацию о пользователе по его ID.
 	// Возвращает структуру db.User и ошибку, если пользователь не найден.
-	SelectUser(ctx context.Context, id int64) (*User, error)
+	SelectUser(ctx context.Context, email string) (*User, error)
 
 	// UpdateUser - обновляет информацию о пользователе в базе данных.
 	UpdateUser(ctx context.Context, user User) error
