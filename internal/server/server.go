@@ -13,21 +13,21 @@ import (
 
 // Server представляет gRPC сервер
 type Server struct {
-	grpcPort int
-	auth     *Auth
+	Address string
+	auth    *Auth
 }
 
 // NewServer создает новый экземпляр Server
-func NewServer(grpcPort int, auth *Auth) *Server {
+func NewServer(auth *Auth) *Server {
 	return &Server{
-		grpcPort: grpcPort,
-		auth:     auth,
+		Address: auth.Config.GRPC.Address(),
+		auth:    auth,
 	}
 }
 
 // Start запускает gRPC сервер
 func (s *Server) Start() error {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", s.grpcPort))
+	lis, err := net.Listen("tcp", s.Address)
 	if err != nil {
 		return fmt.Errorf("failed to listen: %w", err)
 	}
@@ -36,7 +36,7 @@ func (s *Server) Start() error {
 	reflection.Register(grpcServer)
 	desc.RegisterUserAPIV1Server(grpcServer, s.auth)
 
-	log.Printf("server listening at :%v", s.grpcPort)
+	log.Printf("server listening at :%v", s.Address)
 
 	return grpcServer.Serve(lis)
 }
