@@ -119,7 +119,7 @@ jobs:
             docker run -d -p 50052:50052 --network auth-service-network --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
 
             # Запуск или создание контейнера Postgres с постоянным хранилищем
-            if [ $(docker ps -q -f name=$DB_CONTAINER_NAME) ]; then
+            if [ "$(docker ps -q -f name=$DB_CONTAINER_NAME)" ]; then
             echo "Контейнер базы данных уже запущен"
             else
             docker run -d --name $DB_CONTAINER_NAME \
