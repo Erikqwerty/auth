@@ -18,7 +18,7 @@ func (pg *PG) UpdateUser(ctx context.Context, user db.User) error {
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return errSQLtoSring(err)
+		return errSQLCreateQwery(err)
 	}
 
 	_, err = pg.pool.Exec(ctx, sql, args...)

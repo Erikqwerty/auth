@@ -2,9 +2,9 @@ package pg
 
 import "fmt"
 
-// errSQLtoSring - ошибка преобразования запроса
-func errSQLtoSring(err error) error {
-	return fmt.Errorf("ошибка конвертации sql запроса в строку: %w", err)
+// errSQLCreateQwery - ошибка преобразования запроса
+func errSQLCreateQwery(err error) error {
+	return fmt.Errorf("ошибка построения SQL-запроса: %w", err)
 }
 
 // errSQLQwery - ошибка выполнения sql запроса

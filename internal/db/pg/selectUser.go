@@ -18,7 +18,7 @@ func (pg *PG) SelectUser(ctx context.Context, email string) (*db.User, error) {
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return nil, errSQLtoSring(err)
+		return nil, errSQLCreateQwery(err)
 	}
 
 	var user db.User

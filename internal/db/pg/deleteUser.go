@@ -25,7 +25,7 @@ func (pg *PG) DeleteUser(ctx context.Context, id int64) error {
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return errSQLtoSring(err)
+		return errSQLCreateQwery(err)
 	}
 
 	_, err = pg.pool.Exec(ctx, sql, args...)
@@ -45,7 +45,7 @@ func checkIDExists(ctx context.Context, pg *PG, id int64) (bool, error) {
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return false, errSQLtoSring(err)
+		return false, errSQLCreateQwery(err)
 	}
 
 	var exists int
@@ -54,7 +54,7 @@ func checkIDExists(ctx context.Context, pg *PG, id int64) (bool, error) {
 		if err == pgx.ErrNoRows {
 			return false, nil
 		}
-		return false, errSQLtoSring(err)
+		return false, errSQLQwery(err)
 	}
 
 	return true, nil

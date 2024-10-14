@@ -16,7 +16,7 @@ func (pg *PG) InsertUser(ctx context.Context, user db.User) (int64, error) {
 	// Конвертируем построенный запрос в SQL-строку и список аргументов.
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return 0, errSQLtoSring(err)
+		return 0, errSQLCreateQwery(err)
 	}
 
 	var id int64

@@ -17,7 +17,7 @@ func (pg *PG) СheckEmailExists(ctx context.Context, email string) (bool, error)
 
 	sql, args, err := query.ToSql()
 	if err != nil {
-		return false, errSQLtoSring(err)
+		return false, errSQLCreateQwery(err)
 	}
 
 	var exists int
