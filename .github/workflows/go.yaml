@@ -105,7 +105,7 @@ jobs:
             echo "PG_DATABASE_NAME=auth" >> .env
             echo "PG_USER=${{ secrets.PG_USER }}" >> .env
             echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
-            echo "PG_PORT=54321" >> .env
+            echo "PG_PORT=5432" >> .env
             echo "MIGRATION_DIR=./migrations" >> .env
 
             # Создаем сеть
@@ -127,7 +127,7 @@ jobs:
             -e POSTGRES_DB=auth \
             -e POSTGRES_USER=${{ secrets.PG_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.PG_PASSWORD }} \
-            -v postgres_data:/var/lib/postgresql/data \
+            -v postgres_data:/var/lib/postgresql/data2 \
             -p 50062:5432 $DB_IMAGE_NAME
             fi
            
