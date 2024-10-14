@@ -127,7 +127,7 @@ jobs:
             -e POSTGRES_DB=auth \
             -e POSTGRES_USER=${{ secrets.PG_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.PG_PASSWORD }} \
-            -v postgres_data:/var/lib/postgresql/data2 \
+            -v postgres_data:/var/lib/postgresql/data \
             -p 50062:5432 $DB_IMAGE_NAME
             fi
            
