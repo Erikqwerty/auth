@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
@@ -14,7 +15,7 @@ func (a *Auth) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse
 
 	user, err := a.DB.SelectUser(ctx, req.Email)
 	if err != nil {
-		return &desc.GetResponse{}, err
+		return &desc.GetResponse{}, fmt.Errorf("пользователь с таким email не существует %v", err)
 	}
 
 	return &desc.GetResponse{
