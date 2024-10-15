@@ -13,7 +13,7 @@ import (
 func (a *Auth) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
 	log.Printf("Получение информации о пользователе по его идентификатору: %v", req.Email)
 
-	user, err := a.DB.SelectUser(ctx, req.Email)
+	user, err := a.DB.ReadUser(ctx, req.Email)
 	if err != nil {
 		return &desc.GetResponse{}, fmt.Errorf("пользователь с таким email не существует %v", err)
 	}

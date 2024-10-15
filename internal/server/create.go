@@ -35,7 +35,7 @@ func (a *Auth) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Creat
 		UpdatedAt:    time.Now().In(location),
 	}
 
-	id, err := a.DB.InsertUser(ctx, user)
+	id, err := a.DB.CreateUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}

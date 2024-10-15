@@ -6,8 +6,8 @@ import (
 	"github.com/erikqwerty/auth/internal/db"
 )
 
-// InsertUser - создает нового пользователя в базе данных и возвращает его ID.
-func (pg *PG) InsertUser(ctx context.Context, user db.User) (int64, error) {
+// CreateUser - создает нового пользователя в базе данных и возвращает его ID.
+func (pg *PG) CreateUser(ctx context.Context, user db.User) (int64, error) {
 
 	query := pg.sb.Insert("users").Columns("name", "email", "password_hash", "role_id", "created_at", "updated_at").
 		Values(user.Name, user.Email, user.PasswordHash, user.RoleID, user.CreatedAt, user.UpdatedAt).
