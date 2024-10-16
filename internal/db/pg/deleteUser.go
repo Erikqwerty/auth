@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx"
 )
 
-// DeleteUser - удаляет пользователя из базы данных по его ID.
+// DeleteUser - удаляет пользователя из базы данных по его (id).
 func (pg *PG) DeleteUser(ctx context.Context, id int64) error {
 
 	status, err := checkIDExists(ctx, pg, id)

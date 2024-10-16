@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-// Update обновление информации о пользователе по его идентификатору
+// Update - обрабатывает запросы на обновление информации о пользователе
 func (a *Auth) Update(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
 
 	location := time.FixedZone("UTC+3", 3*60*60)

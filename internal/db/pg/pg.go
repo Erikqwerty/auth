@@ -19,7 +19,6 @@ type PG struct {
 
 // New - создает новый экземпляр PG для работы с базой данных PostgreSQL.
 // Принимает DSN (Data Source Name) и возвращает ошибку, если подключение невозможно.
-// New - создает новый объект для работы с базой данных PostgreSQL.
 func New(dsn string) (*PG, error) {
 	config, err := pgxpool.ParseConfig(dsn)
 	if err != nil {

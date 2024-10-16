@@ -9,7 +9,7 @@ import (
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 )
 
-// Auth используется для реализации методов UserAPIV1.
+// Auth - используется для реализации методов UserAPIV1.
 type Auth struct {
 	desc.UnimplementedUserAPIV1Server
 	Config *config.Config

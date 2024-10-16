@@ -7,7 +7,7 @@ import (
 	"github.com/erikqwerty/auth/internal/db"
 )
 
-// UpdateUser обновляет информацию о пользователе в базе данных по его ID.
+// UpdateUser - обновляет информацию о пользователе (user).
 func (pg *PG) UpdateUser(ctx context.Context, user db.User) error {
 	query := pg.sb.
 		Update("users").

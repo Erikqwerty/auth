@@ -7,8 +7,8 @@ import (
 	"github.com/erikqwerty/auth/internal/db"
 )
 
-// ReadUser - получает информацию о пользователе по его ID.
-// Возвращает структуру db.User и ошибку, если пользователь не найден.
+// ReadUser - получает информацию о пользователе по его (email).
+// Возвращает структуру (db.User) и ошибку, если пользователь не найден.
 func (pg *PG) ReadUser(ctx context.Context, email string) (*db.User, error) {
 	query := pg.sb.
 		Select("id", "name", "email", "password_hash", "role_id", "created_at", "updated_at").

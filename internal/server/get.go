@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// Get получение информации о пользователе по его идентификатору
+// Get - обрабатывает запросы на получение информации о пользователе
 func (a *Auth) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
 	log.Printf("Получение информации о пользователе по его идентификатору: %v", req.Email)
 

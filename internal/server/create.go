@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Create создание нового пользователя в системе
+// Create - обрабатывает запросы на создание нового пользователя
 func (a *Auth) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 
 	err := a.checkReqCreate(ctx, req)
