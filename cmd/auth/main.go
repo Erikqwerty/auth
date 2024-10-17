@@ -1,16 +1,27 @@
 package main
 
 import (
+	"flag"
 	"log"
 
 	"github.com/erikqwerty/auth/internal/server"
 )
 
-const grpcPort = 50052
+var configPath string
+
+func init() {
+	flag.StringVar(&configPath, "config-path", ".env", "path to config file")
+}
 
 func main() {
-	auth := &server.Auth{}
-	srv := server.NewServer(grpcPort, auth)
+	flag.Parse()
+
+	auth, err := server.NewAuthApp(configPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	srv := server.NewServer(auth)
 
 	if err := srv.Start(); err != nil {
 		log.Fatalf("failed to start server: %v", err)

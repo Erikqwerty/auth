@@ -1,67 +1,142 @@
-name: Go
+name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+
+env:
+  REGISTRY: "cr.selcloud.ru/qwerty"
+  IMAGE_NAME: "auth-server"
+  CONTAINER_NAME: "auth-server-container"
+  DB_CONTAINER_NAME: "auth-db-container"
+  DB_IMAGE_NAME: "postgres:13"
 
 jobs:
+  # Go Job - выполняет билд, тесты и линтинг кода
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Set up Go
-          uses: actions/setup-go@v5
-          with:
-            go-version: '1.23'
-            cache-dependency-path: go.sum
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache-dependency-path: go.sum
 
-        - name: Build
-          run: go build -o ./bin/ -v ./...
+      - name: Build
+        run: go build -o ./bin/ -v ./...
 
-        - name: Test
-          run: go test -v ./...
+      - name: Test
+        run: go test -v ./...
 
   linter:
-    name: lint
     runs-on: ubuntu-latest
+    needs: build-and-test  # Выполняется после build-and-test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
           go-version: '1.23'
           cache: false
-      - name: golangci-lint
+
+      - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
-          # Require: The version of golangci-lint to use.
-          # When `install-mode` is `binary` (default) the value can be v1.2 or v1.2.3 or `latest` to use the latest version.
-          # When `install-mode` is `goinstall` the value can be v1.2.3, `latest`, or the hash of a commit.
           version: v1.61
-
-          # Optional: working directory, useful for monorepos
-          # working-directory: somedir
-
-          # Optional: golangci-lint command line arguments.
-          #
-          # Note: By default, the `.golangci.yml` file should be at the root of the repository.
-          # The location of the configuration file can be changed by using `--config=`
           args: --timeout=30m --config=./.golangci.pipeline.yaml
 
-          # Optional: show only new issues if it's a pull request. The default value is `false`.
-          # only-new-issues: true
+  # CI/CD Job - выполняет сборку и деплой Docker-образа
+  image-build-and-push:
+    runs-on: ubuntu-latest
+    needs: [build-and-test, linter]  # Выполняется после Go-шагов
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-          # Optional: if set to true, then all caching functionality will be completely disabled,
-          #           takes precedence over all other caching options.
-          # skip-cache: true
+      - name: Create .env file for CI
+        run: |
+          echo "PG_DATABASE_NAME=auth" >> .env
+          echo "PG_USER=${{ secrets.PG_USER }}" >> .env
+          echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
+          echo "PG_PORT=5432" >> .env
+          echo "MIGRATION_DIR=./migrations" >> .env
+          echo "GRPC_HOST=0.0.0.0" >> .env
+          echo "GRPC_PORT=50052" >> .env
+          echo "PG_DSN=host=$DB_CONTAINER_NAME port=5432 dbname=auth user=${{secrets.PG_USER}} password=${{secrets.PG_PASSWORD}} sslmode=disable" >> .env
 
-          # Optional: if set to true, then the action won't cache or restore ~/go/pkg.
-          # skip-pkg-cache: true
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-          # Optional: if set to true, then the action won't cache or restore ~/.cache/go-build.
-          # skip-build-cache: true
+      - name: Login to Docker Registry
+        run: docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
 
-          # Optional: The mode to install golangci-lint. It can be 'binary' or 'goinstall'.
-          # install-mode: "goinstall"
+      - name: Build and Push Docker Image
+        run: |
+          TAG_NAME=$(echo $GITHUB_SHA | head -c7)
+          docker buildx create --use
+          docker buildx build --no-cache --push --tag $REGISTRY/$IMAGE_NAME:$TAG_NAME -f Dockerfile .
+
+      - name: Build and Push Migrator Image
+        run: |
+          TAG_NAME=$(echo $GITHUB_SHA | head -c7)
+          docker buildx build --no-cache --push --tag $REGISTRY/auth_migrator:$TAG_NAME -f migration.Dockerfile .
+
+  deploy-image:
+    runs-on: ubuntu-latest
+    needs: image-build-and-push  # Выполняется после успешного image-build-and-push
+    steps:
+      - name: Deploy Server Supernova via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: 33
+          envs: IMAGE_NAME, REGISTRY, GITHUB_SHA, CONTAINER_NAME, DB_CONTAINER_NAME, DB_IMAGE_NAME
+          script: |
+            # Создаем файл .env
+            echo "PG_DATABASE_NAME=auth" >> .env
+            echo "PG_USER=${{ secrets.PG_USER }}" >> .env
+            echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
+            echo "PG_PORT=5432" >> .env
+            echo "MIGRATION_DIR=./migrations" >> .env
+
+            # Создаем сеть
+            docker network create auth-service-network || true
+
+            # Запуск сервера авторизации
+            TAG_NAME=$(echo $GITHUB_SHA | head -c7)
+            docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
+            docker stop $CONTAINER_NAME || true
+            docker rm $CONTAINER_NAME || true
+            docker run -d -p 50052:50052 --network auth-service-network --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
+
+            # Запуск или создание контейнера Postgres с постоянным хранилищем
+            if [ "$(docker ps -q -f name=$DB_CONTAINER_NAME)" ]; then
+            echo "Контейнер базы данных уже запущен"
+            else
+            docker run -d --name $DB_CONTAINER_NAME \
+            --network auth-service-network \
+            -e POSTGRES_DB=auth \
+            -e POSTGRES_USER=${{ secrets.PG_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.PG_PASSWORD }} \
+            -v postgres_data:/var/lib/postgresql/auth_data \
+            -p 50062:5432 $DB_IMAGE_NAME
+            fi
+           
+            # Запускаем мигратор
+            docker stop auth_migrator || echo "Контейнер auth_migrator не запущен"
+            docker rm auth_migrator || echo "Контейнер auth_migrator не существует"
+            docker run --network auth-service-network --name auth_migrator \
+            --env-file .env \
+            -e DB_HOST=$DB_CONTAINER_NAME -t $REGISTRY/auth_migrator:$TAG_NAME || echo "Ошибка запуска контейнера миграций"
+          
+            # Удаление старых Docker-образов, которые не используются более одного дня
+            docker image prune -a --filter "until=24h" -f

@@ -1,5 +1,5 @@
-# microservices_course_boilerplate
+# Домашка №2
 
-Данный репозиторий содержит boilerplate для выполнения домашних заданий по курсу ["Микросервисы как в BigTech-компаниях"](https://olezhek28.courses/).
+Протестировать можно тут: 38.242.238.94:50052
 
-Автор курса: [Олег Козырев](https://www.linkedin.com/in/olezhek28/)
+Только у меня reflection.Register(grpcServer) не работает на сервере. А на localhost работает. Поэтому для тестов можно взять мой protofile.
