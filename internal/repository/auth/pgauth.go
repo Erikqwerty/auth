@@ -5,12 +5,13 @@ import (
 	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/erikqwerty/auth/internal/model"
 
+	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	"github.com/erikqwerty/auth/internal/repository/auth/convertor"
-	"github.com/erikqwerty/auth/internal/repository/auth/modelrepo"
 	"github.com/jackc/pgx/v4/pgxpool"
+
+	modelRepo "github.com/erikqwerty/auth/internal/repository/auth/model"
 )
 
 var _ repository.AuthRepository = (*repo)(nil)
@@ -73,7 +74,7 @@ func (pg *repo) ReadUser(ctx context.Context, email string) (*model.User, error)
 		return nil, err
 	}
 
-	var user = &modelrepo.User{}
+	var user = &modelRepo.User{}
 
 	err = pg.db.QueryRow(ctx, sql, args...).Scan(
 		&user.ID,

@@ -1,8 +1,6 @@
-package modelrepo
+package model
 
-import (
-	"time"
-)
+import "time"
 
 // User - структура, представляющая пользователя в базе данных.
 type User struct {

@@ -2,10 +2,10 @@ package convertor
 
 import (
 	"github.com/erikqwerty/auth/internal/model"
-	"github.com/erikqwerty/auth/internal/repository/auth/modelrepo"
+	modelRepo "github.com/erikqwerty/auth/internal/repository/auth/model"
 )
 
-func ToAuthFromRepo(modeldb *modelrepo.User) *model.User {
+func ToAuthFromRepo(modeldb *modelRepo.User) *model.User {
 	return &model.User{
 		ID:           modeldb.ID,
 		Name:         modeldb.Name,
