@@ -5,20 +5,22 @@ import (
 	"log"
 
 	"github.com/erikqwerty/auth/internal/api"
+	"github.com/erikqwerty/auth/internal/client/db"
+	"github.com/erikqwerty/auth/internal/client/db/pg"
 	"github.com/erikqwerty/auth/internal/closer"
 	"github.com/erikqwerty/auth/internal/config"
 	"github.com/erikqwerty/auth/internal/repository"
-	authrepository "github.com/erikqwerty/auth/internal/repository/auth"
 	"github.com/erikqwerty/auth/internal/service"
+
+	authrepository "github.com/erikqwerty/auth/internal/repository/auth"
 	authservice "github.com/erikqwerty/auth/internal/service/auth"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type serviceProvider struct {
 	pgConfig   config.PGConfig
 	grpcConfig config.GRPCConfig
 
-	pgPool         *pgxpool.Pool
+	dbClient       db.Client
 	authRepository repository.AuthRepository
 
 	authService service.AuthService
@@ -52,33 +54,26 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	return s.grpcConfig
 }
 
-func (s *serviceProvider) PgPool(ctx context.Context) *pgxpool.Pool {
+func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 
-	if s.pgConfig == nil {
-		s.PGConfig()
-	}
-
-	if s.pgPool == nil {
-		pool, err := pgxpool.Connect(ctx, s.pgConfig.DSN())
+	if s.dbClient == nil {
+		cl, err := pg.New(ctx, s.PGConfig().DSN())
 		if err != nil {
 			log.Fatalf("ошибка подключения к базе данных: %v", err)
 		}
-		err = pool.Ping(ctx)
+		err = cl.DB().Ping(ctx)
 		if err != nil {
 			log.Fatalf("ping до базы данных не проходит: %v", err)
 		}
-		closer.Add(func() error {
-			pool.Close()
-			return nil
-		})
-		s.pgPool = pool
+		closer.Add(cl.Close)
+		s.dbClient = cl
 	}
-	return s.pgPool
+	return s.dbClient
 }
 
 func (s *serviceProvider) AuthRepository(ctx context.Context) repository.AuthRepository {
 	if s.authRepository == nil {
-		s.authRepository = authrepository.NewRepo(s.PgPool(ctx))
+		s.authRepository = authrepository.NewRepo(s.DBClient(ctx))
 	}
 	return s.authRepository
 }

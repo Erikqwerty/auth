@@ -2,14 +2,13 @@ package authrepository
 
 import (
 	"context"
-	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
 
+	"github.com/erikqwerty/auth/internal/client/db"
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	"github.com/erikqwerty/auth/internal/repository/auth/convertor"
-	"github.com/jackc/pgx/v4/pgxpool"
 
 	modelRepo "github.com/erikqwerty/auth/internal/repository/auth/model"
 )
@@ -29,11 +28,11 @@ const (
 )
 
 type repo struct {
-	db *pgxpool.Pool
+	db db.Client
 }
 
 // NewRepo - Создает новый обьект repo, для работы с базой данных
-func NewRepo(db *pgxpool.Pool) *repo {
+func NewRepo(db db.Client) *repo {
 	return &repo{db: db}
 }
 
@@ -48,15 +47,21 @@ func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error)
 		Suffix("RETURNING id").
 		PlaceholderFormat(sq.Dollar)
 
-	querySQL, args, err := query.ToSql() // Переименовал переменную sql
+	sql, args, err := query.ToSql()
 	if err != nil {
-		return 0, fmt.Errorf("failed to generate SQL query: %w", err)
+		return 0, err
+	}
+
+	q := db.Query{
+		Name:     "auth_repository_CreateUser",
+		QueryRaw: sql,
 	}
 
 	var id int64
-	err = pg.db.QueryRow(ctx, querySQL, args...).Scan(&id)
+	err = pg.db.DB().ScanOneContext(ctx, id, q, args...)
+
 	if err != nil {
-		return 0, fmt.Errorf("failed to execute query: %w", err)
+		return 0, err
 	}
 
 	return id, nil
@@ -75,17 +80,15 @@ func (pg *repo) ReadUser(ctx context.Context, email string) (*model.User, error)
 		return nil, err
 	}
 
+	q := db.Query{
+		Name:     "auth_repository_ReadUser",
+		QueryRaw: sql,
+	}
+
 	var user = &modelRepo.User{}
 
-	err = pg.db.QueryRow(ctx, sql, args...).Scan(
-		&user.ID,
-		&user.Name,
-		&user.Email,
-		&user.PasswordHash,
-		&user.RoleID,
-		&user.CreatedAt,
-		&user.UpdatedAt,
-	)
+	err = pg.db.DB().ScanOneContext(ctx, user, q, args...)
+
 	if err != nil {
 		return nil, err
 	}
@@ -107,8 +110,12 @@ func (pg *repo) UpdateUser(ctx context.Context, user *model.User) error {
 	if err != nil {
 		return err
 	}
+	q := db.Query{
+		Name:     "auth_repository_UpdateUser",
+		QueryRaw: sql,
+	}
 
-	_, err = pg.db.Exec(ctx, sql, args...)
+	_, err = pg.db.DB().ExecContext(ctx, q, args...)
 	if err != nil {
 		return err
 	}
@@ -129,7 +136,12 @@ func (pg *repo) DeleteUser(ctx context.Context, id int64) error {
 		return err
 	}
 
-	_, err = pg.db.Exec(ctx, sql, args...)
+	q := db.Query{
+		Name:     "auth_repository_DeleteUser",
+		QueryRaw: sql,
+	}
+
+	_, err = pg.db.DB().ExecContext(ctx, q, args...)
 	if err != nil {
 		return err
 	}
