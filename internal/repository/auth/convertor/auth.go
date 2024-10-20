@@ -5,6 +5,7 @@ import (
 	modelRepo "github.com/erikqwerty/auth/internal/repository/auth/model"
 )
 
+// ToAuthFromRepo - Конвертор преобразующие структуру repo слоя в структуру бизнес-логики
 func ToAuthFromRepo(modeldb *modelRepo.User) *model.User {
 	return &model.User{
 		ID:           modeldb.ID,

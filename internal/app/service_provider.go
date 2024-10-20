@@ -45,7 +45,7 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	if s.grpcConfig == nil {
 		cfg, err := config.NewGRPCConfig()
 		if err != nil {
-			log.Fatalf("ошибка загрущки конфигурации gRPC сервера: %s", err.Error())
+			log.Fatalf("ошибка загрузки конфигурации gRPC сервера: %s", err.Error())
 		}
 		s.grpcConfig = cfg
 	}

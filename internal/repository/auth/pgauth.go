@@ -23,7 +23,7 @@ const (
 	nameColumn         = "name"
 	emailColumn        = "email"
 	passwordHashColumn = "password_hash"
-	roleIdColumn       = "role_id"
+	roleIDColumn       = "role_id"
 	createdAtColumn    = "created_at"
 	updatedAtColumn    = "updated_at"
 )
@@ -32,6 +32,7 @@ type repo struct {
 	db *pgxpool.Pool
 }
 
+// NewRepo - Создает новый обьект repo, для работы с базой данных
 func NewRepo(db *pgxpool.Pool) *repo {
 	return &repo{db: db}
 }
@@ -40,7 +41,7 @@ func NewRepo(db *pgxpool.Pool) *repo {
 func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error) {
 	query := sq.Insert(tableUsers).Columns(
 		nameColumn, emailColumn, passwordHashColumn,
-		roleIdColumn, createdAtColumn, updatedAtColumn).
+		roleIDColumn, createdAtColumn, updatedAtColumn).
 		Values(
 			user.Name, user.Email, user.PasswordHash,
 			user.RoleID, user.CreatedAt, user.UpdatedAt).
@@ -64,7 +65,7 @@ func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error)
 // ReadUser - считывает информацию о пользователе из бд
 func (pg *repo) ReadUser(ctx context.Context, email string) (*model.User, error) {
 	query := sq.
-		Select(idColumn, nameColumn, emailColumn, passwordHashColumn, roleIdColumn, createdAtColumn, updatedAtColumn).
+		Select(idColumn, nameColumn, emailColumn, passwordHashColumn, roleIDColumn, createdAtColumn, updatedAtColumn).
 		From(tableUsers).
 		Where(sq.Eq{emailColumn: email}).Limit(1).
 		PlaceholderFormat(sq.Dollar)
@@ -97,7 +98,7 @@ func (pg *repo) UpdateUser(ctx context.Context, user *model.User) error {
 	query := sq.
 		Update(tableUsers).
 		Set(nameColumn, user.Name).
-		Set(roleIdColumn, user.RoleID).
+		Set(roleIDColumn, user.RoleID).
 		Set(updatedAtColumn, user.UpdatedAt).
 		Where(sq.Eq{idColumn: user.ID}).
 		PlaceholderFormat(sq.Dollar)

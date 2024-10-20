@@ -11,6 +11,7 @@ type service struct {
 	authRepository repository.AuthRepository
 }
 
+// NewService - создает экземляр сервиса
 func NewService(authRepository repository.AuthRepository) dev.AuthService {
 	return &service{
 		authRepository: authRepository,

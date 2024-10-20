@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-// Update - обрабатывает запросы на обновление информации о пользователе
+// Update - обрабатывает получаемый запрос от клиента gRPC, на обновление информации о пользователе
 func (i *Implementation) Update(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
 
 	err := i.authService.Update(ctx, convertor.ToModelUserFromUpdateRequest(req))

@@ -6,7 +6,7 @@ import (
 	"github.com/erikqwerty/auth/internal/model"
 )
 
-// Service - интерфейс сервисного слоя
+// AuthService - интерфейс сервисного слоя
 type AuthService interface {
 	// Create - создание пользователя
 	Create(ctx context.Context, user *model.User) (int64, error)

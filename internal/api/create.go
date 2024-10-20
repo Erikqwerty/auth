@@ -9,6 +9,7 @@ import (
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 )
 
+// Create - обрабатывает получаемый запрос от клиента gRPC на создание пользователя
 func (i *Implementation) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
 	if req.Password != req.PasswordConfirm {
 		return nil, errors.New("пароли не совпадают")
