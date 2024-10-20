@@ -65,7 +65,7 @@ message GetResponse {
 // Сообщение запроса для метода Update (обновление данных пользователя)
 message UpdateRequest {
   // Идентификатор пользователя, данные которого нужно обновить
-  int64 id = 1;
+  string email = 1;
   // Имя пользователя (обновляется при необходимости)                     
   google.protobuf.StringValue name = 2; 
 
