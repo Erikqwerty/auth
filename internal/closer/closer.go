@@ -24,7 +24,9 @@ func CloseAll() {
 	globalCloser.CloseAll()
 }
 
-// Closer ...
+// Closer управляет списком функций закрытия ресурсов, таких как соединения с базой данных или файлы.
+// Он гарантирует, что все зарегистрированные функции будут вызваны при завершении работы программы,
+// и каждая функция будет вызвана только один раз, даже если CloseAll() будет вызвано несколько раз.
 type Closer struct {
 	mu    sync.Mutex
 	once  sync.Once
@@ -32,7 +34,9 @@ type Closer struct {
 	funcs []func() error
 }
 
-// New returns new Closer, if []os.Signal is specified Closer will automatically call CloseAll when one of signals is received from OS
+// New возвращает новый Closer.
+// Если указан срез []os.Signal, Closer автоматически вызовет
+// CloseAll при получении одного из сигналов от операционной системы.
 func New(sig ...os.Signal) *Closer {
 	c := &Closer{done: make(chan struct{})}
 	if len(sig) > 0 {
@@ -47,19 +51,23 @@ func New(sig ...os.Signal) *Closer {
 	return c
 }
 
-// Add func to closer
+// Add  добавляет функцию закрытия в closer
 func (c *Closer) Add(f ...func() error) {
 	c.mu.Lock()
 	c.funcs = append(c.funcs, f...)
 	c.mu.Unlock()
 }
 
-// Wait blocks until all closer functions are done
+// Wait блокирует выполнение до тех пор, пока все функции закрытия не завершатся
 func (c *Closer) Wait() {
 	<-c.done
 }
 
-// CloseAll calls all closer functions
+// CloseAll вызывает все зарегистрированные функции закрытия ресурсов.
+// Гарантирует, что каждая функция будет вызвана только один раз благодаря sync.Once.
+// Выполняет все функции закрытия асинхронно, собирая ошибки их выполнения.
+// После завершения всех операций закрытия закрывается канал done,
+// сигнализируя о завершении процесса закрытия.
 func (c *Closer) CloseAll() {
 	c.once.Do(func() {
 		defer close(c.done)
@@ -69,8 +77,10 @@ func (c *Closer) CloseAll() {
 		c.funcs = nil
 		c.mu.Unlock()
 
-		// call all Closer funcs async
+		// Канал для сбора ошибок выполнения функций
 		errs := make(chan error, len(funcs))
+
+		// Асинхронный вызов всех зарегистрированных функций закрытия
 		for _, f := range funcs {
 			go func(f func() error) {
 				errs <- f()
