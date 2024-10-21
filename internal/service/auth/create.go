@@ -20,8 +20,22 @@ func (s *service) Create(ctx context.Context, user *model.User) (int64, error) {
 	location := time.FixedZone("UTC+3", 3*60*60)
 	user.CreatedAt = time.Now().In(location)
 	user.UpdatedAt = time.Now().In(location)
+	var id int64
+	err = s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
+		var errTx error
+		id, errTx = s.authRepository.CreateUser(ctx, user)
+		if errTx != nil {
+			return errTx
+		}
 
-	id, err := s.authRepository.CreateUser(ctx, user)
+		_, errTx = s.authRepository.ReadUser(ctx, user.Email)
+		if errTx != nil {
+			return errTx
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return 0, err
 	}

@@ -14,6 +14,12 @@ import (
 	"github.com/erikqwerty/auth/internal/client/db/prettier"
 )
 
+type key string
+
+const (
+	TxKey key = "tx" // TxKey - ключ по которому достаются транзакции
+)
+
 // pg представляет реализацию интерфейса db.DB для работы с базой данных Postgres через pgxpool.
 type pg struct {
 	dbc *pgxpool.Pool
@@ -55,12 +61,22 @@ func (p *pg) ScanAllContext(ctx context.Context, dest interface{}, q db.Query, a
 func (p *pg) ExecContext(ctx context.Context, q db.Query, args ...interface{}) (pgconn.CommandTag, error) {
 	logQuery(ctx, q, args...)
 
+	tx, ok := ctx.Value(TxKey).(pgx.Tx)
+	if ok {
+		return tx.Exec(ctx, q.QueryRaw, args...)
+	}
+
 	return p.dbc.Exec(ctx, q.QueryRaw, args...)
 }
 
 // QueryContext выполняет SQL-запрос и возвращает pgx.Rows с результатами.
 func (p *pg) QueryContext(ctx context.Context, q db.Query, args ...interface{}) (pgx.Rows, error) {
 	logQuery(ctx, q, args...)
+
+	tx, ok := ctx.Value(TxKey).(pgx.Tx)
+	if ok {
+		return tx.Query(ctx, q.QueryRaw, args...)
+	}
 
 	return p.dbc.Query(ctx, q.QueryRaw, args...)
 }
@@ -69,7 +85,21 @@ func (p *pg) QueryContext(ctx context.Context, q db.Query, args ...interface{}) 
 func (p *pg) QueryRowContext(ctx context.Context, q db.Query, args ...interface{}) pgx.Row {
 	logQuery(ctx, q, args...)
 
+	tx, ok := ctx.Value(TxKey).(pgx.Tx)
+	if ok {
+		return tx.QueryRow(ctx, q.QueryRaw, args...)
+	}
+
 	return p.dbc.QueryRow(ctx, q.QueryRaw, args...)
+}
+
+func (p *pg) BeginTx(ctx context.Context, txOptions pgx.TxOptions) (pgx.Tx, error) {
+	return p.dbc.BeginTx(ctx, txOptions)
+}
+
+// MakeContextTx - Добавление транзакции к контексту
+func MakeContextTx(ctx context.Context, tx pgx.Tx) context.Context {
+	return context.WithValue(ctx, TxKey, tx)
 }
 
 // Ping выполняет пинг к базе данных для проверки доступности.

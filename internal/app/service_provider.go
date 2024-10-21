@@ -7,6 +7,7 @@ import (
 	"github.com/erikqwerty/auth/internal/api"
 	"github.com/erikqwerty/auth/internal/client/db"
 	"github.com/erikqwerty/auth/internal/client/db/pg"
+	"github.com/erikqwerty/auth/internal/client/db/transaction"
 	"github.com/erikqwerty/auth/internal/closer"
 	"github.com/erikqwerty/auth/internal/config"
 	"github.com/erikqwerty/auth/internal/repository"
@@ -21,6 +22,7 @@ type serviceProvider struct {
 	grpcConfig config.GRPCConfig
 
 	dbClient       db.Client
+	txManager      db.TxManager
 	authRepository repository.AuthRepository
 
 	authService service.AuthService
@@ -71,6 +73,14 @@ func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	return s.dbClient
 }
 
+func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
+	if s.txManager == nil {
+		s.txManager = transaction.NewTransactionManager(s.DBClient(ctx).DB())
+	}
+
+	return s.txManager
+}
+
 func (s *serviceProvider) AuthRepository(ctx context.Context) repository.AuthRepository {
 	if s.authRepository == nil {
 		s.authRepository = authrepository.NewRepo(s.DBClient(ctx))
@@ -80,7 +90,7 @@ func (s *serviceProvider) AuthRepository(ctx context.Context) repository.AuthRep
 
 func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 	if s.authService == nil {
-		s.authService = authservice.NewService(s.AuthRepository(ctx))
+		s.authService = authservice.NewService(s.AuthRepository(ctx), s.TxManager(ctx))
 	}
 	return s.authService
 }
