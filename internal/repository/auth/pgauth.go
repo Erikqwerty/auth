@@ -58,7 +58,7 @@ func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error)
 	}
 
 	var id int64
-	err = pg.db.DB().ScanOneContext(ctx, id, q, args...)
+	err = pg.db.DB().ScanOneContext(ctx, &id, q, args...)
 
 	if err != nil {
 		return 0, err

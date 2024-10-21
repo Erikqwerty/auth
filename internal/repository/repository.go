@@ -20,4 +20,10 @@ type AuthRepository interface {
 
 	// DeleteUser - удаляет пользователя
 	DeleteUser(ctx context.Context, id int64) error
+
+	RepoLoger
+}
+type RepoLoger interface {
+	// CreateLog - Записывает действие в бд в лог таблицу
+	CreateLog(ctx context.Context, log *model.Log) error
 }

@@ -8,6 +8,13 @@ import (
 
 var _ dev.AuthService = (*service)(nil)
 
+const (
+	actionTypeCreate = "CREATE"
+	actionTypeGet    = "GET"
+	actionTypeUpdate = "UPDATE"
+	actionTypeDelete = "DELETE"
+)
+
 type service struct {
 	authRepository repository.AuthRepository
 	txManager      db.TxManager

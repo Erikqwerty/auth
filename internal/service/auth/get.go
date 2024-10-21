@@ -17,7 +17,11 @@ func (s *service) Get(ctx context.Context, email string) (*model.User, error) {
 		if errTX != nil {
 			return errTX
 		}
-		//
+
+		if errTx := s.createLog(ctx, actionTypeGet); errTx != nil {
+			return errTx
+		}
+
 		return nil
 	})
 

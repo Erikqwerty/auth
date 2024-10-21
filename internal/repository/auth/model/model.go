@@ -18,3 +18,11 @@ type Role struct {
 	ID       int64  `db:"id"`
 	RoleName string `db:"role_name"`
 }
+
+// Log - структура для логирования действий в БД
+type Log struct {
+	ID              int64     `db:"id"`
+	ActionType      string    `db:"action_type"` // Тип действия ('CREATE', 'GET', 'UPDATE', 'DELETE')
+	ActionDetails   string    `db:"action_details"`
+	ActionTimestamp time.Time `db:"action_timestamp"`
+}

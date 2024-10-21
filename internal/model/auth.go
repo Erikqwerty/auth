@@ -21,3 +21,11 @@ type Role struct {
 	ID       int64
 	RoleName string
 }
+
+// Log - структура для логирования действий в БД
+type Log struct {
+	ID              int64
+	ActionType      string
+	ActionDetails   string
+	ActionTimestamp time.Time
+}

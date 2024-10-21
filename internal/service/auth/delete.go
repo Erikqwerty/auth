@@ -1,6 +1,8 @@
 package authservice
 
-import "context"
+import (
+	"context"
+)
 
 // Delete - удалить пользователя
 func (s *service) Delete(ctx context.Context, id int64) error {
@@ -10,7 +12,11 @@ func (s *service) Delete(ctx context.Context, id int64) error {
 		if errTX != nil {
 			return errTX
 		}
-		//
+
+		if errTx := s.createLog(ctx, actionTypeDelete); errTx != nil {
+			return errTx
+		}
+
 		return nil
 	})
 
