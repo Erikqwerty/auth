@@ -7,10 +7,26 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-// Handler - функция, которая выполняется в транзакции
+// DB описывает интерфейс для работы с базой данных.
+// Включает операции выполнения SQL-запросов, управления транзакциями и проверки соединений.
+type DB interface {
+	SQLExecer
+	Pinger
+	Transactor
+	Close()
+}
+
+// Client определяет интерфейс клиента для взаимодействия с базой данных.
+type Client interface {
+	DB() DB
+	Close() error
+}
+
+// Handler представляет функцию, которая выполняется в рамках транзакции.
 type Handler func(ctx context.Context) error
 
-// TxManager менеджер транзакций, который выполняет указанный пользователем обработчик в транзакции
+// TxManager определяет интерфейс менеджера транзакций, который обрабатывает транзакции
+// с использованием пользовательских функций-обработчиков.
 type TxManager interface {
 	ReadCommitted(ctx context.Context, f Handler) error
 }
@@ -18,12 +34,6 @@ type TxManager interface {
 // Transactor интерфейс для работы с транзакциями
 type Transactor interface {
 	BeginTx(ctx context.Context, txOptions pgx.TxOptions) (pgx.Tx, error)
-}
-
-// Client клиент для работы с БД
-type Client interface {
-	DB() DB
-	Close() error
 }
 
 // Query обертка над запросом, хранящая имя запроса и сам запрос
@@ -55,12 +65,4 @@ type QueryExecer interface {
 // Pinger интерфейс для проверки соединения с БД
 type Pinger interface {
 	Ping(ctx context.Context) error
-}
-
-// DB интерфейс для работы с БД
-type DB interface {
-	SQLExecer
-	Pinger
-	Transactor
-	Close()
 }
