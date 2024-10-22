@@ -23,6 +23,8 @@ type AuthRepository interface {
 
 	RepoLoger
 }
+
+// RepoLoger - интерфейс для взаимодействия с базой данных таблицой логов.
 type RepoLoger interface {
 	// CreateLog - Записывает действие в бд в лог таблицу
 	CreateLog(ctx context.Context, log *model.Log) error

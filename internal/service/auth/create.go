@@ -74,7 +74,7 @@ func hashPassword(password string) (string, error) {
 
 // details - информация о пользователе
 func details(ctx context.Context) string {
-	var info string = "Адрес:"
+	info := "Адрес:"
 	peer, _ := peer.FromContext(ctx)
 	info += peer.Addr.String()
 	return info
