@@ -7,8 +7,8 @@ import (
 )
 
 // GetUser - получение информации о пользователе
-func (s *service) GetUser(ctx context.Context, email string) (*model.User, error) {
-	user := &model.User{}
+func (s *service) GetUser(ctx context.Context, email string) (*model.ReadUser, error) {
+	user := &model.ReadUser{}
 
 	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTX error

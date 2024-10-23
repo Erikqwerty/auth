@@ -38,15 +38,13 @@ func NewRepo(db db.Client) *repo {
 }
 
 // CreateUser - создает нового пользователя (user)
-func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error) {
+func (pg *repo) CreateUser(ctx context.Context, user *model.CreateUser) (int64, error) {
 	query := sq.
 		Insert(tableUsers).
 		Columns(
-			nameColumn, emailColumn, passwordHashColumn,
-			roleIDColumn, createdAtColumn, updatedAtColumn).
+			nameColumn, emailColumn, passwordHashColumn, roleIDColumn, createdAtColumn).
 		Values(
-			user.Name, user.Email, user.PasswordHash,
-			user.RoleID, user.CreatedAt, user.UpdatedAt).
+			user.Name, user.Email, user.PasswordHash, user.RoleID, user.CreatedAt).
 		Suffix("RETURNING id").
 		PlaceholderFormat(sq.Dollar)
 
@@ -71,7 +69,7 @@ func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error)
 }
 
 // ReadUser - считывает информацию о пользователе из бд
-func (pg *repo) ReadUser(ctx context.Context, email string) (*model.User, error) {
+func (pg *repo) ReadUser(ctx context.Context, email string) (*model.ReadUser, error) {
 	query := sq.
 		Select(idColumn, nameColumn, emailColumn, passwordHashColumn, roleIDColumn, createdAtColumn, updatedAtColumn).
 		From(tableUsers).
@@ -96,35 +94,35 @@ func (pg *repo) ReadUser(ctx context.Context, email string) (*model.User, error)
 		return nil, err
 	}
 
-	return convertor.ToAuthFromRepo(user), nil
+	return convertor.ToReadUserFromRepo(user), nil
 }
 
 // UpdateUser - обновляет информацию о пользователе.
-func (pg *repo) UpdateUser(ctx context.Context, user *model.User) error {
+func (pg *repo) UpdateUser(ctx context.Context, user *model.UpdateUser) error {
 	query := sq.Update(tableUsers)
 
-	fieldsToUpdate := true
+	fieldsToUpdate := false
 
 	if user.Name != "" {
 		query = query.Set(nameColumn, user.Name)
-		fieldsToUpdate = false
+		fieldsToUpdate = true
 	}
 
 	if user.RoleID != 0 {
 		query = query.Set(roleIDColumn, user.RoleID)
-		fieldsToUpdate = false
+		fieldsToUpdate = true
 	}
 
 	if !user.UpdatedAt.IsZero() {
 		query = query.Set(updatedAtColumn, user.UpdatedAt)
-		fieldsToUpdate = false
+		fieldsToUpdate = true
 	}
 
-	if fieldsToUpdate {
+	if !fieldsToUpdate {
 		return errors.New("ErrNothingToUpdate")
 	}
 
-	query.Where(sq.Eq{idColumn: user.ID}).PlaceholderFormat(sq.Dollar)
+	query = query.Where(sq.Eq{emailColumn: user.Email}).PlaceholderFormat(sq.Dollar)
 
 	sql, args, err := query.ToSql()
 	if err != nil {

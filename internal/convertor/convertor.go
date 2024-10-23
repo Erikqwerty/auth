@@ -7,18 +7,18 @@ import (
 )
 
 // ToModelUserFromCreateRequest - Конвертер для преобразования gRPC-запроса создания пользователя в модель бизнес-логики User
-func ToModelUserFromCreateRequest(req *desc.CreateRequest) *model.User {
-	return &model.User{
-		Name:     req.Name,
-		Email:    req.Email,
-		Password: req.Password,
-		RoleID:   int32(req.Role),
+func ToModelUserFromCreateRequest(req *desc.CreateRequest) *model.CreateUser {
+	return &model.CreateUser{
+		Name:         req.Name,
+		Email:        req.Email,
+		PasswordHash: req.Password,
+		RoleID:       int32(req.Role),
 	}
 }
 
 // ToModelUserFromUpdateRequest - Конвертор для преобразования gRPC-запроса обновления пользователя в модель бизнес-логики User
-func ToModelUserFromUpdateRequest(req *desc.UpdateRequest) *model.User {
-	return &model.User{
+func ToModelUserFromUpdateRequest(req *desc.UpdateRequest) *model.UpdateUser {
+	return &model.UpdateUser{
 		Email:  req.Email,
 		Name:   req.Name.Value,
 		RoleID: int32(req.Role),
@@ -26,7 +26,7 @@ func ToModelUserFromUpdateRequest(req *desc.UpdateRequest) *model.User {
 }
 
 // ToGetResponseFromModelUser - Конвертор для преобразования модели бизнес-логики User в gRPC-ответ
-func ToGetResponseFromModelUser(user *model.User) *desc.GetResponse {
+func ToGetResponseFromModelUser(user *model.ReadUser) *desc.GetResponse {
 	return &desc.GetResponse{
 		Id:        user.ID,
 		Name:      user.Name,

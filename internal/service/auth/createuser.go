@@ -7,7 +7,7 @@ import (
 )
 
 // Create - создание пользователя
-func (s *service) CreateUser(ctx context.Context, user *model.User) (int64, error) {
+func (s *service) CreateUser(ctx context.Context, user *model.CreateUser) (int64, error) {
 	if err := prepareUserForCreate(user); err != nil {
 		return 0, err
 	}

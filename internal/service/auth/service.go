@@ -35,18 +35,14 @@ func NewService(authRepository repository.AuthRepository, txManager db.TxManager
 }
 
 // prepareUserForCreate - добавляем в model.User хеш пароля и задаем время создания и обновления пользователя
-func prepareUserForCreate(user *model.User) error {
-	// Хэшируем пароль
-	passHash, err := hashPassword(user.Password)
+func prepareUserForCreate(user *model.CreateUser) error {
+	passHash, err := hashPassword(user.PasswordHash)
 	if err != nil {
 		return err
 	}
-	user.PasswordHash = passHash
 
-	// Устанавливаем временные метки
-	t := timeNowUTC3()
-	user.CreatedAt = t
-	user.UpdatedAt = t
+	user.PasswordHash = passHash
+	user.CreatedAt = timeNowUTC3()
 
 	return nil
 }
