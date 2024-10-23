@@ -12,6 +12,10 @@ import (
 
 // UpdateUserInfo - обрабатывает получаемый запрос от клиента gRPC, на обновление информации о пользователе
 func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
+	if req.Email == "" {
+		return nil, errors.New("не указан пользователь данные которого нужно обновить")
+	}
+
 	updateScope := 0
 
 	if req.Name.Value != "" {
