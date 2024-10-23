@@ -5,12 +5,13 @@ import (
 	"log"
 	"net"
 
-	"github.com/erikqwerty/auth/internal/closer"
-	"github.com/erikqwerty/auth/internal/config"
-	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
+
+	"github.com/erikqwerty/auth/internal/closer"
+	"github.com/erikqwerty/auth/internal/config"
+	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 )
 
 // App - Структура приложения, содержащая сервисы и gRPC сервер
@@ -22,10 +23,12 @@ type App struct {
 // NewApp инициализирует новое приложение, вызывая initDeps для настройки зависимостей
 func NewApp(ctx context.Context) (*App, error) {
 	a := &App{}
+
 	err := a.initDeps(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	return a, nil
 }
 
@@ -67,6 +70,7 @@ func (a *App) initConfig(_ context.Context) error {
 
 func (a *App) initServiceProvider(_ context.Context) error {
 	a.serviceProvider = newServiceProvider()
+
 	return nil
 }
 

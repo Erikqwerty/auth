@@ -5,13 +5,13 @@ import (
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 )
 
-// Implementation - имплементирует gRPC методы
-type Implementation struct {
+// ImplServAuthUser - имплементирует gRPC методы
+type ImplServAuthUser struct {
 	desc.UnimplementedUserAPIV1Server
 	authService service.AuthService
 }
 
-// NewImplementation - Создает новый обьект имплементирующий gRPC сервер
-func NewImplementation(authService service.AuthService) *Implementation {
-	return &Implementation{authService: authService}
+// NewImplementationServAuthUser - Создает новый обьект имплементирующий gRPC сервер
+func NewImplementationServAuthUser(authService service.AuthService) *ImplServAuthUser {
+	return &ImplServAuthUser{authService: authService}
 }

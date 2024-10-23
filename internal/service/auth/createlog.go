@@ -1,4 +1,4 @@
-package authservice
+package auth
 
 import (
 	"context"
@@ -17,5 +17,6 @@ func (s *service) createLog(ctx context.Context, actionType string) error {
 	if errTx != nil {
 		return errTx
 	}
+
 	return nil
 }

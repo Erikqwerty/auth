@@ -36,7 +36,6 @@ func NewDB(dbc *pgxpool.Pool) db.DB {
 // ScanOneContext выполняет SQL-запрос и сканирует одну запись в dest.
 // ctx - контекст для запроса, dest - куда будут помещены результаты, q - запрос, args - аргументы запроса.
 func (p *pg) ScanOneContext(ctx context.Context, dest interface{}, q db.Query, args ...interface{}) error {
-
 	row, err := p.QueryContext(ctx, q, args...)
 	if err != nil {
 		return err
@@ -48,7 +47,6 @@ func (p *pg) ScanOneContext(ctx context.Context, dest interface{}, q db.Query, a
 // ScanAllContext выполняет SQL-запрос и сканирует все записи в dest.
 // ctx - контекст для запроса, dest - куда будут помещены результаты, q - запрос, args - аргументы запроса.
 func (p *pg) ScanAllContext(ctx context.Context, dest interface{}, q db.Query, args ...interface{}) error {
-
 	row, err := p.QueryContext(ctx, q, args...)
 	if err != nil {
 		return err
@@ -115,6 +113,7 @@ func (p *pg) Close() {
 // logQuery логирует SQL-запрос с его именем и параметрами.
 func logQuery(ctx context.Context, q db.Query, args ...interface{}) {
 	prettyQuery := prettier.Pretty(q.QueryRaw, prettier.PlaceholderDollar, args...)
+
 	log.Println(
 		ctx,
 		fmt.Sprintf("sql: %s", q.Name),

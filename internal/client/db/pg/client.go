@@ -18,6 +18,7 @@ func New(ctx context.Context, dsn string) (db.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &pgClient{
 		masterDBS: &pg{dbc: dbc},
 	}, nil
@@ -33,5 +34,6 @@ func (c *pgClient) Close() error {
 	if c.masterDBS != nil {
 		c.masterDBS.Close()
 	}
+
 	return nil
 }

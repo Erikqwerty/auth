@@ -1,4 +1,4 @@
-package authrepository
+package auth
 
 import (
 	"context"
@@ -38,9 +38,11 @@ func NewRepo(db db.Client) *repo {
 
 // CreateUser - создает нового пользователя (user)
 func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error) {
-	query := sq.Insert(tableUsers).Columns(
-		nameColumn, emailColumn, passwordHashColumn,
-		roleIDColumn, createdAtColumn, updatedAtColumn).
+	query := sq.
+		Insert(tableUsers).
+		Columns(
+			nameColumn, emailColumn, passwordHashColumn,
+			roleIDColumn, createdAtColumn, updatedAtColumn).
 		Values(
 			user.Name, user.Email, user.PasswordHash,
 			user.RoleID, user.CreatedAt, user.UpdatedAt).
@@ -58,8 +60,8 @@ func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error)
 	}
 
 	var id int64
-	err = pg.db.DB().ScanOneContext(ctx, &id, q, args...)
 
+	err = pg.db.DB().ScanOneContext(ctx, &id, q, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -72,7 +74,8 @@ func (pg *repo) ReadUser(ctx context.Context, email string) (*model.User, error)
 	query := sq.
 		Select(idColumn, nameColumn, emailColumn, passwordHashColumn, roleIDColumn, createdAtColumn, updatedAtColumn).
 		From(tableUsers).
-		Where(sq.Eq{emailColumn: email}).Limit(1).
+		Where(sq.Eq{emailColumn: email}).
+		Limit(1).
 		PlaceholderFormat(sq.Dollar)
 
 	sql, args, err := query.ToSql()
@@ -88,7 +91,6 @@ func (pg *repo) ReadUser(ctx context.Context, email string) (*model.User, error)
 	var user = &modelRepo.User{}
 
 	err = pg.db.DB().ScanOneContext(ctx, user, q, args...)
-
 	if err != nil {
 		return nil, err
 	}
@@ -110,6 +112,7 @@ func (pg *repo) UpdateUser(ctx context.Context, user *model.User) error {
 	if err != nil {
 		return err
 	}
+
 	q := db.Query{
 		Name:     "auth_repository_UpdateUser",
 		QueryRaw: sql,

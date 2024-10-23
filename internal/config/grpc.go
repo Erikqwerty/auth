@@ -29,7 +29,6 @@ type grpcConfig struct {
 // Читает хост и порт из переменных окружения GRPC_HOST и GRPC_PORT.
 // Возвращает ошибку, если одна из переменных не найдена.
 func NewGRPCConfig() (GRPCConfig, error) {
-
 	host := os.Getenv(grpcHostEnvName)
 	if len(host) == 0 {
 		return nil, errors.New("grpc host not found")

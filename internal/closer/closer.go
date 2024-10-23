@@ -39,6 +39,7 @@ type Closer struct {
 // CloseAll при получении одного из сигналов от операционной системы.
 func New(sig ...os.Signal) *Closer {
 	c := &Closer{done: make(chan struct{})}
+
 	if len(sig) > 0 {
 		go func() {
 			ch := make(chan os.Signal, 1)
@@ -48,6 +49,7 @@ func New(sig ...os.Signal) *Closer {
 			c.CloseAll()
 		}()
 	}
+
 	return c
 }
 
@@ -73,8 +75,10 @@ func (c *Closer) CloseAll() {
 		defer close(c.done)
 
 		c.mu.Lock()
+
 		funcs := c.funcs
 		c.funcs = nil
+
 		c.mu.Unlock()
 
 		// Канал для сбора ошибок выполнения функций
