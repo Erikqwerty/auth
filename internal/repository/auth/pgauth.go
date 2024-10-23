@@ -2,6 +2,8 @@ package auth
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
 
@@ -38,16 +40,22 @@ func NewRepo(db db.Client) *repo {
 
 // CreateUser - создает нового пользователя (user)
 func (pg *repo) CreateUser(ctx context.Context, user *model.User) (int64, error) {
-	query := sq.
-		Insert(tableUsers).
-		Columns(
-			nameColumn, emailColumn, passwordHashColumn,
-			roleIDColumn, createdAtColumn, updatedAtColumn).
-		Values(
-			user.Name, user.Email, user.PasswordHash,
-			user.RoleID, user.CreatedAt, user.UpdatedAt).
+	query := sq.Insert(tableUsers)
+
+	columns, values, err := prepareUserFields(user)
+	if err != nil {
+		return 0, err
+	}
+
+	query = query.
+		Columns(columns...).
+		Values(values...).
 		Suffix("RETURNING id").
 		PlaceholderFormat(sq.Dollar)
+
+	if len(columns) == 0 {
+		return 0, fmt.Errorf("no valid fields to insert")
+	}
 
 	sql, args, err := query.ToSql()
 	if err != nil {
@@ -100,13 +108,30 @@ func (pg *repo) ReadUser(ctx context.Context, email string) (*model.User, error)
 
 // UpdateUser - обновляет информацию о пользователе.
 func (pg *repo) UpdateUser(ctx context.Context, user *model.User) error {
-	query := sq.
-		Update(tableUsers).
-		Set(nameColumn, user.Name).
-		Set(roleIDColumn, user.RoleID).
-		Set(updatedAtColumn, user.UpdatedAt).
-		Where(sq.Eq{idColumn: user.ID}).
-		PlaceholderFormat(sq.Dollar)
+	query := sq.Update(tableUsers)
+
+	fieldsToUpdate := true
+
+	if user.Name != "" {
+		query = query.Set(nameColumn, user.Name)
+		fieldsToUpdate = false
+	}
+
+	if user.RoleID != 0 {
+		query = query.Set(roleIDColumn, user.RoleID)
+		fieldsToUpdate = false
+	}
+
+	if !user.UpdatedAt.IsZero() {
+		query = query.Set(updatedAtColumn, user.UpdatedAt)
+		fieldsToUpdate = false
+	}
+
+	if fieldsToUpdate {
+		return errors.New("ErrNothingToUpdate")
+	}
+
+	query.Where(sq.Eq{idColumn: user.ID}).PlaceholderFormat(sq.Dollar)
 
 	sql, args, err := query.ToSql()
 	if err != nil {
@@ -128,7 +153,6 @@ func (pg *repo) UpdateUser(ctx context.Context, user *model.User) error {
 
 // DeleteUser - удаляет пользователя из базы данных по его (id).
 func (pg *repo) DeleteUser(ctx context.Context, id int64) error {
-
 	query := sq.
 		Delete(tableUsers).
 		Where(sq.Eq{idColumn: id}).
@@ -150,4 +174,46 @@ func (pg *repo) DeleteUser(ctx context.Context, id int64) error {
 	}
 
 	return nil
+}
+
+// prepareUserFields подготавливает колонки и значения для вставки нового пользователя
+func prepareUserFields(user *model.User) ([]string, []interface{}, error) {
+	columns := []string{}
+	values := []interface{}{}
+
+	if user.Name != "" {
+		columns = append(columns, nameColumn)
+		values = append(values, user.Name)
+	}
+
+	if user.Email != "" {
+		columns = append(columns, emailColumn)
+		values = append(values, user.Email)
+	}
+
+	if user.PasswordHash != "" {
+		columns = append(columns, passwordHashColumn)
+		values = append(values, user.PasswordHash)
+	}
+
+	if user.RoleID != 0 {
+		columns = append(columns, roleIDColumn)
+		values = append(values, user.RoleID)
+	}
+
+	if !user.CreatedAt.IsZero() {
+		columns = append(columns, createdAtColumn)
+		values = append(values, user.CreatedAt)
+	}
+
+	if !user.UpdatedAt.IsZero() {
+		columns = append(columns, updatedAtColumn)
+		values = append(values, user.UpdatedAt)
+	}
+
+	if len(columns) == 0 {
+		return nil, nil, fmt.Errorf("no valid fields to insert")
+	}
+
+	return columns, values, nil
 }
