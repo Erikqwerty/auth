@@ -13,6 +13,7 @@ type User struct {
 	RoleID   int32
 }
 
+// CreateUser - структра представляющая создание пользователя
 type CreateUser struct {
 	Name         string
 	Email        string
@@ -21,12 +22,14 @@ type CreateUser struct {
 	CreatedAt    time.Time
 }
 
+// ReadUser - структра представляющая чтение пользователя
 type ReadUser struct {
 	ID int64
 	CreateUser
 	UpdatedAt time.Time
 }
 
+// UpdateUser -  структра представляющая обновление пользователя
 type UpdateUser struct {
 	Email     string // не обновляется, используется как условие (кого обновлять)
 	Name      string

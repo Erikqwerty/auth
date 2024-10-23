@@ -6,8 +6,8 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// ToModelUserFromCreateRequest - Конвертер для преобразования gRPC-запроса создания пользователя в модель бизнес-логики User
-func ToModelUserFromCreateRequest(req *desc.CreateRequest) *model.CreateUser {
+// ToCreateUserFromCreateRequest - Конвертер для преобразования gRPC-запроса создания пользователя в модель бизнес-логики User
+func ToCreateUserFromCreateRequest(req *desc.CreateRequest) *model.CreateUser {
 	return &model.CreateUser{
 		Name:         req.Name,
 		Email:        req.Email,
@@ -16,8 +16,8 @@ func ToModelUserFromCreateRequest(req *desc.CreateRequest) *model.CreateUser {
 	}
 }
 
-// ToModelUserFromUpdateRequest - Конвертор для преобразования gRPC-запроса обновления пользователя в модель бизнес-логики User
-func ToModelUserFromUpdateRequest(req *desc.UpdateRequest) *model.UpdateUser {
+// ToUpdateUserFromUpdateRequest - Конвертор для преобразования gRPC-запроса обновления пользователя в модель бизнес-логики User
+func ToUpdateUserFromUpdateRequest(req *desc.UpdateRequest) *model.UpdateUser {
 	return &model.UpdateUser{
 		Email:  req.Email,
 		Name:   req.Name.Value,
@@ -25,8 +25,8 @@ func ToModelUserFromUpdateRequest(req *desc.UpdateRequest) *model.UpdateUser {
 	}
 }
 
-// ToGetResponseFromModelUser - Конвертор для преобразования модели бизнес-логики User в gRPC-ответ
-func ToGetResponseFromModelUser(user *model.ReadUser) *desc.GetResponse {
+// ToGetResponseFromReadUser - Конвертор для преобразования модели бизнес-логики User в gRPC-ответ
+func ToGetResponseFromReadUser(user *model.ReadUser) *desc.GetResponse {
 	return &desc.GetResponse{
 		Id:        user.ID,
 		Name:      user.Name,

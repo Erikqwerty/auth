@@ -5,7 +5,7 @@ import (
 	modelRepo "github.com/erikqwerty/auth/internal/repository/auth/model"
 )
 
-// ToAuthFromRepo - Конвертор преобразующие структуру repo слоя в структуру бизнес-логики
+// ToReadUserFromRepo - Конвертор преобразующие структуру repo слоя в структуру бизнес-логики
 func ToReadUserFromRepo(modeldb *modelRepo.User) *model.ReadUser {
 	createUser := model.CreateUser{
 		Name:         modeldb.Name,

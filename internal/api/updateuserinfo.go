@@ -30,7 +30,7 @@ func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateR
 		return nil, errors.New("не переданны данные для обновления")
 	}
 
-	err := i.authService.UpdateUser(ctx, convertor.ToModelUserFromUpdateRequest(req))
+	err := i.authService.UpdateUser(ctx, convertor.ToUpdateUserFromUpdateRequest(req))
 	if err != nil {
 		return nil, err
 	}

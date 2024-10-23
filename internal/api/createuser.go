@@ -35,7 +35,7 @@ func (i *ImplServAuthUser) CreateUser(ctx context.Context, req *desc.CreateReque
 		return nil, errors.New("email не валиден")
 	}
 
-	id, err := i.authService.CreateUser(ctx, convertor.ToModelUserFromCreateRequest(req))
+	id, err := i.authService.CreateUser(ctx, convertor.ToCreateUserFromCreateRequest(req))
 	if err != nil {
 		return nil, err
 	}

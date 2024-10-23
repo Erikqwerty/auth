@@ -19,5 +19,5 @@ func (i *ImplServAuthUser) GetUserInfo(ctx context.Context, req *desc.GetRequest
 		return nil, err
 	}
 
-	return convertor.ToGetResponseFromModelUser(user), nil
+	return convertor.ToGetResponseFromReadUser(user), nil
 }
