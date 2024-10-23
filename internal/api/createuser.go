@@ -11,6 +11,22 @@ import (
 
 // CreateUser - обрабатывает получаемый запрос от клиента gRPC на создание пользователя
 func (i *ImplServAuthUser) CreateUser(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
+	if req.Email == "" {
+		return nil, errors.New("не указан email")
+	}
+
+	if req.Name == "" {
+		return nil, errors.New("не указано имя пользователя")
+	}
+
+	if req.Password == "" {
+		return nil, errors.New("не указан пароль")
+	}
+
+	if req.PasswordConfirm == "" {
+		return nil, errors.New("не указан пароль подтверждения")
+	}
+
 	if req.Password != req.PasswordConfirm {
 		return nil, errors.New("пароли не совпадают")
 	}
