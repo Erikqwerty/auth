@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -11,6 +12,20 @@ import (
 
 // UpdateUserInfo - обрабатывает получаемый запрос от клиента gRPC, на обновление информации о пользователе
 func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
+	updateScope := 0
+
+	if req.Name.Value != "" {
+		updateScope++
+	}
+
+	if req.Role.String() != "" {
+		updateScope++
+	}
+
+	if updateScope == 0 {
+		return nil, errors.New("не переданны данные для обновления")
+	}
+
 	err := i.authService.UpdateUser(ctx, convertor.ToModelUserFromUpdateRequest(req))
 	if err != nil {
 		return nil, err
