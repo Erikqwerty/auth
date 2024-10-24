@@ -12,13 +12,13 @@ option go_package = "github.com/erikqwerty/auth/pkg/userapi_v1;userapi_v1";
 // основные RPC методы для управления пользователями
 service UserAPIV1 {
   // Метод для создания нового пользователя
-  rpc Create(CreateRequest) returns (CreateResponse); 
+  rpc CreateUser(CreateRequest) returns (CreateResponse); 
   // Метод для получения данных пользователя       
-  rpc Get(GetRequest) returns (GetResponse);     
+  rpc GetUserInfo(GetRequest) returns (GetResponse);     
   // Метод для обновления данных пользователя           
-  rpc Update(UpdateRequest) returns (google.protobuf.Empty);
+  rpc UpdateUserInfo(UpdateRequest) returns (google.protobuf.Empty);
   // Метод для удаления пользователя 
-  rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+  rpc DeleteUser(DeleteRequest) returns (google.protobuf.Empty);
 }
 
 // Role - перечисление ролей пользователя
@@ -65,7 +65,7 @@ message GetResponse {
 // Сообщение запроса для метода Update (обновление данных пользователя)
 message UpdateRequest {
   // Идентификатор пользователя, данные которого нужно обновить
-  int64 id = 1;
+  string email = 1;
   // Имя пользователя (обновляется при необходимости)                     
   google.protobuf.StringValue name = 2; 
 

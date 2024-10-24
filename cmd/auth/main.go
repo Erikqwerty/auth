@@ -1,10 +1,11 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
 
-	"github.com/erikqwerty/auth/internal/server"
+	"github.com/erikqwerty/auth/internal/app"
 )
 
 var configPath string
@@ -14,16 +15,15 @@ func init() {
 }
 
 func main() {
-	flag.Parse()
+	ctx := context.Background()
 
-	auth, err := server.NewAuthApp(configPath)
+	a, err := app.NewApp(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to init app: %s", err.Error())
 	}
 
-	srv := server.NewServer(auth)
-
-	if err := srv.Start(); err != nil {
-		log.Fatalf("failed to start server: %v", err)
+	err = a.Run()
+	if err != nil {
+		log.Fatalf("failed to run app: %s", err.Error())
 	}
 }
