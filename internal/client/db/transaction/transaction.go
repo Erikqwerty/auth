@@ -73,6 +73,8 @@ func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn db.Han
 	return err
 }
 
+// ReadCommitted выполняет функцию обработчика внутри транзакции с уровнем изоляции Read Committed.
+// Если транзакция завершится ошибкой, выполняется откат, в противном случае транзакция коммитится.
 func (m *manager) ReadCommitted(ctx context.Context, f db.Handler) error {
 	txOpts := pgx.TxOptions{IsoLevel: pgx.ReadCommitted}
 
