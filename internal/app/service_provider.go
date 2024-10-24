@@ -34,6 +34,7 @@ func newServiceProvider() *serviceProvider {
 	return &serviceProvider{}
 }
 
+// PGConfig - инициализирует конфигурацию базы данных
 func (s *serviceProvider) PGConfig() config.PGConfig {
 	if s.pgConfig == nil {
 		cfg, err := config.NewPGConfig()
@@ -47,6 +48,7 @@ func (s *serviceProvider) PGConfig() config.PGConfig {
 	return s.pgConfig
 }
 
+// GRPCConfig - инициализирует конфигурацию gRPC сервера
 func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	if s.grpcConfig == nil {
 		cfg, err := config.NewGRPCConfig()
@@ -60,6 +62,7 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	return s.grpcConfig
 }
 
+// DBClient - создает клиента для подключения к базе данных
 func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	if s.dbClient == nil {
 		cl, err := pg.New(ctx, s.PGConfig().DSN())
@@ -80,6 +83,7 @@ func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	return s.dbClient
 }
 
+// TxManager - инициализирует менеджер транзакций
 func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	if s.txManager == nil {
 		s.txManager = transaction.NewTransactionManager(s.DBClient(ctx).DB())
@@ -88,6 +92,7 @@ func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	return s.txManager
 }
 
+// AuthRepository инициализирует репозиторий auth для работы с бд
 func (s *serviceProvider) AuthRepository(ctx context.Context) repository.AuthRepository {
 	if s.authRepository == nil {
 		s.authRepository = authrepository.NewRepo(s.DBClient(ctx))
@@ -96,6 +101,7 @@ func (s *serviceProvider) AuthRepository(ctx context.Context) repository.AuthRep
 	return s.authRepository
 }
 
+// AuthService - инициализирует сервисный слой сервиса auth
 func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 	if s.authService == nil {
 		s.authService = authservice.NewService(s.AuthRepository(ctx), s.TxManager(ctx))
@@ -104,6 +110,7 @@ func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 	return s.authService
 }
 
+// AuthImpl - инициализирует иплиментацию gRPC сервера auth
 func (s *serviceProvider) AuthImpl(ctx context.Context) *api.ImplServAuthUser {
 	if s.authImpl == nil {
 		s.authImpl = api.NewImplementationServAuthUser(s.AuthService(ctx))
