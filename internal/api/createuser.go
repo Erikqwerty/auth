@@ -50,6 +50,7 @@ func validateDataCreateRequest(req *desc.CreateRequest) error {
 	if !isValidEmail(req.Email) {
 		return errors.New("email не валиден")
 	}
+
 	return nil
 }
 

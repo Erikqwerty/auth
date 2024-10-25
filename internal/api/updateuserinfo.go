@@ -12,8 +12,22 @@ import (
 
 // UpdateUserInfo - обрабатывает получаемый запрос от клиента gRPC, на обновление информации о пользователе
 func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
+	err := validateDataUpdateUserInfo(req)
+	if err != nil {
+		return nil, err
+	}
+
+	err = i.authService.UpdateUser(ctx, convertor.ToUpdateUserFromUpdateRequest(req))
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func validateDataUpdateUserInfo(req *desc.UpdateRequest) error {
 	if req.Email == "" {
-		return nil, errors.New("не указан пользователь данные которого нужно обновить")
+		return errors.New("не указан пользователь данные которого нужно обновить")
 	}
 
 	updateScope := 0
@@ -27,13 +41,8 @@ func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateR
 	}
 
 	if updateScope == 0 {
-		return nil, errors.New("не переданны данные для обновления")
+		return errors.New("не переданны данные для обновления")
 	}
 
-	err := i.authService.UpdateUser(ctx, convertor.ToUpdateUserFromUpdateRequest(req))
-	if err != nil {
-		return nil, err
-	}
-
-	return nil, nil
+	return nil
 }
