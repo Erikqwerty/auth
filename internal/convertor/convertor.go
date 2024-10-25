@@ -1,9 +1,10 @@
 package convertor
 
 import (
+	"google.golang.org/protobuf/types/known/timestamppb"
+
 	"github.com/erikqwerty/auth/internal/model"
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // ToCreateUserFromCreateRequest - Конвертер для преобразования gRPC-запроса создания пользователя в модель бизнес-логики User

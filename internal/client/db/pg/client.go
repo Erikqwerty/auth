@@ -3,8 +3,9 @@ package pg
 import (
 	"context"
 
-	"github.com/erikqwerty/auth/internal/client/db"
 	"github.com/jackc/pgx/v4/pgxpool"
+
+	"github.com/erikqwerty/auth/internal/client/db"
 )
 
 // pgClient представляет клиента базы данных, который использует masterDBS для работы с базой данных.

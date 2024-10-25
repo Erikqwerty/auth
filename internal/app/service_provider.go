@@ -12,7 +12,6 @@ import (
 	"github.com/erikqwerty/auth/internal/config"
 	"github.com/erikqwerty/auth/internal/repository"
 	"github.com/erikqwerty/auth/internal/service"
-
 	authrepository "github.com/erikqwerty/auth/internal/repository/auth"
 	authservice "github.com/erikqwerty/auth/internal/service/auth"
 )

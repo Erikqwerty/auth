@@ -4,12 +4,13 @@ import (
 	"context"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc/peer"
+
 	"github.com/erikqwerty/auth/internal/client/db"
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	dev "github.com/erikqwerty/auth/internal/service"
-	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/grpc/peer"
 )
 
 var _ dev.AuthService = (*service)(nil)

@@ -10,7 +10,6 @@ import (
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	"github.com/erikqwerty/auth/internal/repository/auth/convertor"
-
 	modelRepo "github.com/erikqwerty/auth/internal/repository/auth/model"
 )
 
