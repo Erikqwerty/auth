@@ -28,6 +28,8 @@ type Handler func(ctx context.Context) error
 // TxManager определяет интерфейс менеджера транзакций, который обрабатывает транзакции
 // с использованием пользовательских функций-обработчиков.
 type TxManager interface {
+	// ReadCommitted выполняет функцию обработчика внутри транзакции с уровнем изоляции Read Committed.
+	// Если транзакция завершится ошибкой, выполняется откат, в противном случае транзакция коммитится.
 	ReadCommitted(ctx context.Context, f Handler) error
 }
 
