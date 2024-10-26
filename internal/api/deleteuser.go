@@ -26,7 +26,7 @@ func (i *ImplServAuthUser) DeleteUser(ctx context.Context, req *desc.DeleteReque
 // validateDataDeleteUser необходима для проверки переданных данных и их валидации перед обработкой в сервисном слое
 func validateDataDeleteUser(req *desc.DeleteRequest) error {
 	if req.Id == 0 {
-		return errors.New("не указан id")
+		return errors.New("id удаляемого пользователя не может быть равен 0")
 	}
 
 	return nil
