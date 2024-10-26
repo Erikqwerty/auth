@@ -8,7 +8,7 @@ import (
 	"github.com/erikqwerty/auth/pkg/utils/validator"
 )
 
-// валидируемые данные
+// валидируемые данные поля структур запроса gRPC контракта
 const (
 	email           = "Email"
 	name            = "Name"
