@@ -21,7 +21,7 @@ const (
 func (pg *repo) CreateLog(ctx context.Context, log *model.Log) error {
 	query := sq.Insert(tableLogs).
 		Columns(actionType, actionDetails, actionTimestamp).
-		Values(log.ActionType, log.ActionDetails, log.ActionTimestamp).
+		Values(log.ActionType, log.ActionDetails, sq.Expr("NOW()")).
 		PlaceholderFormat(sq.Dollar)
 
 	sql, args, err := query.ToSql()

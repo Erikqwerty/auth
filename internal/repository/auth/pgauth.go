@@ -43,7 +43,7 @@ func (pg *repo) CreateUser(ctx context.Context, user *model.CreateUser) (int64, 
 		Columns(
 			nameColumn, emailColumn, passwordHashColumn, roleIDColumn, createdAtColumn).
 		Values(
-			user.Name, user.Email, user.PasswordHash, user.RoleID, user.CreatedAt).
+			user.Name, user.Email, user.PasswordHash, user.RoleID, sq.Expr("NOW()")).
 		Suffix("RETURNING id").
 		PlaceholderFormat(sq.Dollar)
 

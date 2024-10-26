@@ -21,7 +21,7 @@ const (
 // Ошибки для валидации
 var (
 	ErrEmailNotSpecified           = errors.New("не указан email")
-	ErrNameNotSpecified            = errors.New("нельзя оставлять имя пользователя пустым")
+	ErrNameNotSpecified            = errors.New("имя пользователя указано пустым")
 	ErrPasswordNotSpecified        = errors.New("не указан пароль")
 	ErrPasswordConfirmNotSpecified = errors.New("не указан пароль подтверждения")
 	ErrPasswordsDoNotMatch         = errors.New("пароли не совпадают")
