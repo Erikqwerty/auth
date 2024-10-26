@@ -11,8 +11,8 @@ import (
 
 // DeleteUser - обрабатывает получаемый запрос от клиента gRPC на удаление пользователя
 func (i *ImplServAuthUser) DeleteUser(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
-	if req.Id == 0 {
-		return nil, errors.New("не указан id")
+	if err := validateDataDeleteUser(req); err != nil {
+		return nil, err
 	}
 
 	err := i.authService.DeleteUser(ctx, req.Id)
@@ -21,4 +21,13 @@ func (i *ImplServAuthUser) DeleteUser(ctx context.Context, req *desc.DeleteReque
 	}
 
 	return nil, nil
+}
+
+// validateDataDeleteUser необходима для проверки переданных данных и их валидации перед обработкой в сервисном слое
+func validateDataDeleteUser(req *desc.DeleteRequest) error {
+	if req.Id == 0 {
+		return errors.New("не указан id")
+	}
+
+	return nil
 }

@@ -12,12 +12,11 @@ import (
 
 // UpdateUserInfo - обрабатывает получаемый запрос от клиента gRPC, на обновление информации о пользователе
 func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
-	err := validateDataUpdateUserInfo(req)
-	if err != nil {
+	if err := validateDataUpdateUserInfo(req); err != nil {
 		return nil, err
 	}
 
-	err = i.authService.UpdateUser(ctx, convertor.ToUpdateUserFromUpdateRequest(req))
+	err := i.authService.UpdateUser(ctx, convertor.ToUpdateUserFromUpdateRequest(req))
 	if err != nil {
 		return nil, err
 	}
@@ -25,6 +24,7 @@ func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateR
 	return nil, nil
 }
 
+// validateDataUpdateUserInfo необходима для проверки переданных данных и их валидации перед обработкой в сервисном слое
 func validateDataUpdateUserInfo(req *desc.UpdateRequest) error {
 	if req.Email == "" {
 		return errors.New("не указан пользователь данные которого нужно обновить")
