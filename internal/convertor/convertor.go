@@ -36,7 +36,7 @@ func ToUpdateUserFromUpdateRequest(req *desc.UpdateRequest) *model.UpdateUser {
 }
 
 // ToGetResponseFromReadUser - Конвертор для преобразования модели бизнес-логики User в gRPC-ответ
-func ToGetResponseFromReadUser(user *model.ReadUser) *desc.GetResponse {
+func ToGetResponseFromReadUser(user *model.UserInfo) *desc.GetResponse {
 	if user == nil {
 		return nil
 	}

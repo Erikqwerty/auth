@@ -5,8 +5,8 @@ import (
 	modelRepo "github.com/erikqwerty/auth/internal/repository/auth/model"
 )
 
-// ToReadUserFromRepo - Конвертор преобразующие структуру repo слоя в структуру бизнес-логики
-func ToReadUserFromRepo(modeldb *modelRepo.User) *model.ReadUser {
+// ToUserInfoFromRepo - Конвертор преобразующие структуру repo слоя в структуру бизнес-логики
+func ToUserInfoFromRepo(modeldb *modelRepo.User) *model.UserInfo {
 	createUser := model.CreateUser{
 		Name:         modeldb.Name,
 		Email:        modeldb.Email,
@@ -14,7 +14,7 @@ func ToReadUserFromRepo(modeldb *modelRepo.User) *model.ReadUser {
 		RoleID:       modeldb.RoleID,
 		CreatedAt:    modeldb.CreatedAt,
 	}
-	return &model.ReadUser{
+	return &model.UserInfo{
 		ID:         modeldb.ID,
 		CreateUser: createUser,
 		UpdatedAt:  modeldb.UpdatedAt,

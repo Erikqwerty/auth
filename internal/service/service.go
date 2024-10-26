@@ -11,7 +11,7 @@ type AuthService interface {
 	// CreateUser - создание пользователя
 	CreateUser(ctx context.Context, user *model.CreateUser) (int64, error)
 	// GetUser - получение информации о пользователе
-	GetUser(ctx context.Context, email string) (*model.ReadUser, error)
+	GetUser(ctx context.Context, email string) (*model.UserInfo, error)
 	// UpdateUser - обновить информацию о пользователе
 	UpdateUser(ctx context.Context, user *model.UpdateUser) error
 	// DeleteUser - удалить пользователя

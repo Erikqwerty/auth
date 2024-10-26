@@ -22,8 +22,8 @@ type CreateUser struct {
 	CreatedAt    time.Time
 }
 
-// ReadUser - структра представляющая чтение пользователя
-type ReadUser struct {
+// UserInfo - структра представляющая информацию о пользователе
+type UserInfo struct {
 	ID int64
 	CreateUser
 	UpdatedAt time.Time

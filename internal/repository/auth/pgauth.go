@@ -68,7 +68,7 @@ func (pg *repo) CreateUser(ctx context.Context, user *model.CreateUser) (int64, 
 }
 
 // ReadUser - считывает информацию о пользователе из бд
-func (pg *repo) ReadUser(ctx context.Context, email string) (*model.ReadUser, error) {
+func (pg *repo) ReadUser(ctx context.Context, email string) (*model.UserInfo, error) {
 	query := sq.
 		Select(idColumn, nameColumn, emailColumn, passwordHashColumn, roleIDColumn, createdAtColumn, updatedAtColumn).
 		From(tableUsers).
@@ -93,7 +93,7 @@ func (pg *repo) ReadUser(ctx context.Context, email string) (*model.ReadUser, er
 		return nil, err
 	}
 
-	return convertor.ToReadUserFromRepo(user), nil
+	return convertor.ToUserInfoFromRepo(user), nil
 }
 
 // UpdateUser - обновляет информацию о пользователе.

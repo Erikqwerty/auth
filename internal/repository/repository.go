@@ -13,7 +13,7 @@ type AuthRepository interface {
 	CreateUser(ctx context.Context, user *model.CreateUser) (int64, error)
 
 	// ReadUser - получает информацию о пользователе
-	ReadUser(ctx context.Context, email string) (*model.ReadUser, error)
+	ReadUser(ctx context.Context, email string) (*model.UserInfo, error)
 
 	// UpdateUser - обновляет информацию о пользователе
 	UpdateUser(ctx context.Context, user *model.UpdateUser) error
