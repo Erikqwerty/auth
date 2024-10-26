@@ -25,29 +25,32 @@ func (i *ImplServAuthUser) CreateUser(ctx context.Context, req *desc.CreateReque
 
 // validateDataCreateRequest - необходима для проверки переданных данных и их валидации перед обработкой в сервисном слое
 func validateDataCreateRequest(req *desc.CreateRequest) error {
-	if req.Email == "" {
+	switch {
+	case req.Email == "":
 		return errors.New("не указан email")
-	}
 
-	if req.Name == "" {
-		return errors.New("не указано имя пользователя")
-	}
+	case req.Name == "":
+		return errors.New("нельзя оставлять имя пользователя пустым")
 
-	if req.Password == "" {
+	case req.Password == "":
 		return errors.New("не указан пароль")
-	}
 
-	if req.PasswordConfirm == "" {
+	case req.PasswordConfirm == "":
 		return errors.New("не указан пароль подтверждения")
-	}
 
-	if req.Password != req.PasswordConfirm {
+	case req.Password != req.PasswordConfirm:
 		return errors.New("пароли не совпадают")
-	}
 
-	if !validator.IsValidEmail(req.Email) {
+	case req.Role == desc.Role_ROLE_UNSPECIFIED:
+		return errors.New("роль пользователя не была указана")
+
+	case req.Role != desc.Role_ROLE_ADMIN && req.Role != desc.Role_ROLE_USER:
+		return errors.New("переданная роль пользователя не существует")
+
+	case !validator.IsValidEmail(req.Email):
 		return errors.New("email не валиден")
-	}
 
-	return nil
+	default:
+		return nil
+	}
 }
