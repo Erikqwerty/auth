@@ -3,10 +3,10 @@ package api
 import (
 	"context"
 	"errors"
-	"regexp"
 
 	"github.com/erikqwerty/auth/internal/convertor"
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
+	"github.com/erikqwerty/auth/pkg/utils/validator"
 )
 
 // CreateUser - обрабатывает получаемый запрос от клиента gRPC на создание пользователя
@@ -45,18 +45,9 @@ func validateDataCreateRequest(req *desc.CreateRequest) error {
 		return errors.New("пароли не совпадают")
 	}
 
-	if !isValidEmail(req.Email) {
+	if !validator.IsValidEmail(req.Email) {
 		return errors.New("email не валиден")
 	}
 
 	return nil
-}
-
-// isValidEmail проверяет валидность email-адреса. Возвращает true если валидно.
-func isValidEmail(email string) bool {
-	const emailRegex = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
-
-	re := regexp.MustCompile(emailRegex)
-
-	return re.MatchString(email)
 }
