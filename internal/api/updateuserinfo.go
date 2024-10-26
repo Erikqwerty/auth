@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"errors"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -12,7 +11,7 @@ import (
 
 // UpdateUserInfo - обрабатывает получаемый запрос от клиента gRPC, на обновление информации о пользователе
 func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
-	if err := validateDataUpdateUserInfo(req); err != nil {
+	if err := validateRequest(req); err != nil {
 		return nil, err
 	}
 
@@ -22,27 +21,4 @@ func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateR
 	}
 
 	return nil, nil
-}
-
-// validateDataUpdateUserInfo необходима для проверки переданных данных и их валидации перед обработкой в сервисном слое
-func validateDataUpdateUserInfo(req *desc.UpdateRequest) error {
-	if req.Email == "" {
-		return errors.New("не указан пользователь данные которого нужно обновить")
-	}
-
-	updateScope := 0
-
-	if req.Name.Value != "" {
-		updateScope++
-	}
-
-	if req.Role.String() != "" {
-		updateScope++
-	}
-
-	if updateScope == 0 {
-		return errors.New("не переданны данные для обновления")
-	}
-
-	return nil
 }

@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"errors"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -11,7 +10,7 @@ import (
 
 // DeleteUser - обрабатывает получаемый запрос от клиента gRPC на удаление пользователя
 func (i *ImplServAuthUser) DeleteUser(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
-	if err := validateDataDeleteUser(req); err != nil {
+	if err := validateRequest(req); err != nil {
 		return nil, err
 	}
 
@@ -21,13 +20,4 @@ func (i *ImplServAuthUser) DeleteUser(ctx context.Context, req *desc.DeleteReque
 	}
 
 	return nil, nil
-}
-
-// validateDataDeleteUser необходима для проверки переданных данных и их валидации перед обработкой в сервисном слое
-func validateDataDeleteUser(req *desc.DeleteRequest) error {
-	if req.Id == 0 {
-		return errors.New("id удаляемого пользователя не может быть равен 0")
-	}
-
-	return nil
 }
