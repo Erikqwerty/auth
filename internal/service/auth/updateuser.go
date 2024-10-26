@@ -14,7 +14,7 @@ func (s *service) UpdateUser(ctx context.Context, user *model.UpdateUser) error 
 			return errTX
 		}
 
-		if errTx := s.createLog(ctx, actionTypeUpdate); errTx != nil {
+		if errTx := s.writeLog(ctx, actionTypeUpdate); errTx != nil {
 			return errTx
 		}
 

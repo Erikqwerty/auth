@@ -18,7 +18,7 @@ func (s *service) GetUser(ctx context.Context, email string) (*model.ReadUser, e
 			return errTX
 		}
 
-		if errTx := s.createLog(ctx, actionTypeGet); errTx != nil {
+		if errTx := s.writeLog(ctx, actionTypeGet); errTx != nil {
 			return errTx
 		}
 

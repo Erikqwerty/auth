@@ -22,7 +22,7 @@ func (s *service) CreateUser(ctx context.Context, user *model.CreateUser) (int64
 			return errTx
 		}
 
-		if errTx := s.createLog(ctx, actionTypeCreate); errTx != nil {
+		if errTx := s.writeLog(ctx, actionTypeCreate); errTx != nil {
 			return errTx
 		}
 

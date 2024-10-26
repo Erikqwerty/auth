@@ -12,7 +12,7 @@ func (s *service) DeleteUser(ctx context.Context, id int64) error {
 			return errTX
 		}
 
-		if errTx := s.createLog(ctx, actionTypeDelete); errTx != nil {
+		if errTx := s.writeLog(ctx, actionTypeDelete); errTx != nil {
 			return errTx
 		}
 
