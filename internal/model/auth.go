@@ -31,10 +31,10 @@ type ReadUser struct {
 
 // UpdateUser -  структра представляющая обновление пользователя
 type UpdateUser struct {
-	Email     string // не обновляется, используется как условие (кого обновлять)
-	Name      string
-	RoleID    int32
-	UpdatedAt time.Time
+	Email     *string // не обновляется, используется как условие (кого обновлять)
+	Name      *string
+	RoleID    *int32
+	UpdatedAt *time.Time
 }
 
 // Role - структура, представляющая роль пользователя в базе данных.

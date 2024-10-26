@@ -98,28 +98,29 @@ func (pg *repo) ReadUser(ctx context.Context, email string) (*model.ReadUser, er
 
 // UpdateUser - обновляет информацию о пользователе.
 func (pg *repo) UpdateUser(ctx context.Context, user *model.UpdateUser) error {
+	if user.Email == nil {
+		return errors.New("отсутствует email пользователя данные которого нужно обновить")
+	}
+
 	query := sq.Update(tableUsers)
 
 	fieldsToUpdate := false
 
-	if user.Name != "" {
+	if user.Name != nil {
 		query = query.Set(nameColumn, user.Name)
 		fieldsToUpdate = true
 	}
 
-	if user.RoleID != 0 {
+	if user.RoleID != nil {
 		query = query.Set(roleIDColumn, user.RoleID)
 		fieldsToUpdate = true
 	}
 
-	if !user.UpdatedAt.IsZero() {
-		query = query.Set(updatedAtColumn, user.UpdatedAt)
-		fieldsToUpdate = true
+	if !fieldsToUpdate {
+		return errors.New("отсутствует информация для обновления")
 	}
 
-	if !fieldsToUpdate {
-		return errors.New("ErrNothingToUpdate")
-	}
+	query = query.Set(updatedAtColumn, sq.Expr("NOW()"))
 
 	query = query.Where(sq.Eq{emailColumn: user.Email}).PlaceholderFormat(sq.Dollar)
 

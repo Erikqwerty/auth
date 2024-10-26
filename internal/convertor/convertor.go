@@ -25,10 +25,13 @@ func ToUpdateUserFromUpdateRequest(req *desc.UpdateRequest) *model.UpdateUser {
 	if req == nil {
 		return nil
 	}
+
+	role := int32(req.Role)
+
 	return &model.UpdateUser{
-		Email:  req.Email,
-		Name:   req.Name.Value,
-		RoleID: int32(req.Role),
+		Email:  &req.Email,
+		Name:   &req.Name.Value,
+		RoleID: &role,
 	}
 }
 
