@@ -16,7 +16,7 @@ func ToCreateUserFromCreateRequest(req *desc.CreateRequest) *model.CreateUser {
 		Name:         req.Name,
 		Email:        req.Email,
 		PasswordHash: req.Password,
-		RoleID:       int32(req.Role),
+		RoleID:       int64(req.Role),
 	}
 }
 

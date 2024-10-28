@@ -18,7 +18,7 @@ type CreateUser struct {
 	Name         string
 	Email        string
 	PasswordHash string
-	RoleID       int32
+	RoleID       int64
 	CreatedAt    time.Time
 }
 
