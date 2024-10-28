@@ -16,7 +16,7 @@ type TestRequest struct {
 	Password        string
 	PasswordConfirm string
 	Role            int32
-	ID              int64
+	ID              int32
 }
 
 func TestValidateRequest(t *testing.T) {
@@ -124,7 +124,9 @@ func TestValidateRequest(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			err := api.ValidateRequest(tt.req)
 			if tt.wantErr != nil {
 				require.Error(t, err)

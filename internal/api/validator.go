@@ -15,7 +15,7 @@ const (
 	password        = "Password"
 	passwordConfirm = "PasswordConfirm"
 	role            = "Role"
-	id              = "Id"
+	id              = "ID"
 )
 
 // Ошибки для валидации
