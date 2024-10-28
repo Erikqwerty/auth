@@ -46,7 +46,7 @@ func TestCreateUser(t *testing.T) {
 			Name:         name,
 			Email:        email,
 			PasswordHash: pass,
-			RoleID:       int64(desc.Role_ROLE_USER),
+			RoleID:       int32(desc.Role_ROLE_USER),
 		}
 
 		res = &desc.CreateResponse{Id: id}

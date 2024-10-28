@@ -16,7 +16,7 @@ type TestRequest struct {
 	Password        string
 	PasswordConfirm string
 	Role            int32
-	Id              int64
+	ID              int64
 }
 
 func TestValidateRequest(t *testing.T) {
@@ -34,7 +34,7 @@ func TestValidateRequest(t *testing.T) {
 				Password:        "1234",
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
-				Id:              1},
+				ID:              1},
 			wantErr: nil,
 		},
 		{
@@ -44,7 +44,7 @@ func TestValidateRequest(t *testing.T) {
 				Password:        "1234",
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
-				Id:              1},
+				ID:              1},
 			wantErr: api.ErrEmailNotSpecified,
 		},
 		{
@@ -55,7 +55,7 @@ func TestValidateRequest(t *testing.T) {
 				Password:        "1234",
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
-				Id:              1},
+				ID:              1},
 			wantErr: api.ErrInvalidEmail,
 		},
 		{
@@ -65,7 +65,7 @@ func TestValidateRequest(t *testing.T) {
 				Password:        "1234",
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
-				Id:              1},
+				ID:              1},
 			wantErr: api.ErrNameNotSpecified,
 		},
 		{
@@ -75,7 +75,7 @@ func TestValidateRequest(t *testing.T) {
 				Name:            "Test",
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
-				Id:              1},
+				ID:              1},
 			wantErr: api.ErrPasswordNotSpecified,
 		},
 		{
@@ -85,7 +85,7 @@ func TestValidateRequest(t *testing.T) {
 				Name:     "Test",
 				Password: "1234",
 				Role:     int32(desc.Role_ROLE_USER),
-				Id:       1},
+				ID:       1},
 			wantErr: api.ErrPasswordConfirmNotSpecified,
 		},
 		{
@@ -96,7 +96,7 @@ func TestValidateRequest(t *testing.T) {
 				Password:        "1234",
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_UNSPECIFIED),
-				Id:              1},
+				ID:              1},
 			wantErr: api.ErrRoleNotSpecified,
 		},
 		{
@@ -107,7 +107,7 @@ func TestValidateRequest(t *testing.T) {
 				Password:        "1234",
 				PasswordConfirm: "1234",
 				Role:            99,
-				Id:              1},
+				ID:              1},
 			wantErr: api.ErrInvalidRole,
 		},
 		{
@@ -118,7 +118,7 @@ func TestValidateRequest(t *testing.T) {
 				Password:        "1234",
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
-				Id:              0},
+				ID:              0},
 			wantErr: api.ErrInvalidID,
 		},
 	}

@@ -31,7 +31,7 @@ var (
 	ErrInvalidID                   = errors.New("id удаляемого пользователя не может быть равен 0")
 )
 
-// validateRequest - использовать для проверки получаемых запросов на ожидаемые данные
+// ValidateRequest - использовать для проверки получаемых запросов на ожидаемые данные
 func ValidateRequest(req interface{}) error {
 	v := reflect.ValueOf(req)
 

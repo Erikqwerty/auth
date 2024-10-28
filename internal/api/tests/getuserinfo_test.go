@@ -46,7 +46,7 @@ func TestGetUserInfo(t *testing.T) {
 			CreateUser: model.CreateUser{
 				Name:      name,
 				Email:     email,
-				RoleID:    int64(desc.Role_ROLE_USER),
+				RoleID:    int32(desc.Role_ROLE_USER),
 				CreatedAt: time,
 			},
 			UpdatedAt: time,
