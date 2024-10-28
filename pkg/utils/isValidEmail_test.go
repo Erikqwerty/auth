@@ -1,4 +1,4 @@
-package validator
+package utils
 
 import (
 	"testing"
@@ -8,13 +8,14 @@ import (
 )
 
 func TestIsValidEmail(t *testing.T) {
+	t.Parallel()
 	t.Run("email", func(t *testing.T) {
 		email := gofakeit.Email()
 		expected := true
 
 		require.Equal(t, expected, IsValidEmail(email))
 	})
-	t.Run("NOemail", func(t *testing.T) {
+	t.Run("no valid email", func(t *testing.T) {
 		email := gofakeit.BeerHop()
 		expected := false
 

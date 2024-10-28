@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/peer"
@@ -11,6 +10,7 @@ import (
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	dev "github.com/erikqwerty/auth/internal/service"
+	"github.com/erikqwerty/auth/pkg/utils"
 )
 
 var _ dev.AuthService = (*service)(nil)
@@ -43,14 +43,9 @@ func prepareUserForCreate(user *model.CreateUser) error {
 	}
 
 	user.PasswordHash = passHash
-	user.CreatedAt = timeNowUTC3()
+	user.CreatedAt = utils.TimeNowUTC3()
 
 	return nil
-}
-
-// timeNowUTC3 + возвращает время +3
-func timeNowUTC3() time.Time {
-	return time.Now().In(time.FixedZone("UTC+3", 3*60*60))
 }
 
 // hashPassword - создает хеш из пароля

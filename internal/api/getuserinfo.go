@@ -9,7 +9,7 @@ import (
 
 // GetUserInfo - обрабатывает получаемый запрос от клиента gRPC, на получение информации о пользователе
 func (i *ImplServAuthUser) GetUserInfo(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
-	if err := validateRequest(req); err != nil {
+	if err := ValidateRequest(req); err != nil {
 		return nil, err
 	}
 

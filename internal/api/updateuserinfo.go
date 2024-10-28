@@ -11,7 +11,7 @@ import (
 
 // UpdateUserInfo - обрабатывает получаемый запрос от клиента gRPC, на обновление информации о пользователе
 func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
-	if err := validateRequest(req); err != nil {
+	if err := ValidateRequest(req); err != nil {
 		return nil, err
 	}
 
@@ -20,5 +20,5 @@ func (i *ImplServAuthUser) UpdateUserInfo(ctx context.Context, req *desc.UpdateR
 		return nil, err
 	}
 
-	return nil, nil
+	return &emptypb.Empty{}, nil
 }

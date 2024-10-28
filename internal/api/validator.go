@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
-	"github.com/erikqwerty/auth/pkg/utils/validator"
+	"github.com/erikqwerty/auth/pkg/utils"
 )
 
 // валидируемые данные поля структур запроса gRPC контракта
@@ -32,7 +32,7 @@ var (
 )
 
 // validateRequest - использовать для проверки получаемых запросов на ожидаемые данные
-func validateRequest(req interface{}) error {
+func ValidateRequest(req interface{}) error {
 	v := reflect.ValueOf(req)
 
 	// Проверка на указатель и получение значения
@@ -55,7 +55,7 @@ func validateRequest(req interface{}) error {
 			if field.String() == "" {
 				return ErrEmailNotSpecified
 			}
-			if !validator.IsValidEmail(field.String()) {
+			if !utils.IsValidEmail(field.String()) {
 				return ErrInvalidEmail
 			}
 		case name:
