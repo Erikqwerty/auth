@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/erikqwerty/auth/internal/api"
+	"github.com/erikqwerty/auth/internal/autherrors"
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 )
 
@@ -45,7 +46,7 @@ func TestValidateRequest(t *testing.T) {
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
 				ID:              1},
-			wantErr: api.ErrEmailNotSpecified,
+			wantErr: autherrors.ErrEmailNotSpecified,
 		},
 		{
 			name: "api невалидный email",
@@ -56,7 +57,7 @@ func TestValidateRequest(t *testing.T) {
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
 				ID:              1},
-			wantErr: api.ErrInvalidEmail,
+			wantErr: autherrors.ErrInvalidEmail,
 		},
 		{
 			name: "api пропущено имя",
@@ -66,7 +67,7 @@ func TestValidateRequest(t *testing.T) {
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
 				ID:              1},
-			wantErr: api.ErrNameNotSpecified,
+			wantErr: autherrors.ErrNameNotSpecified,
 		},
 		{
 			name: "api пропущен пароль",
@@ -76,7 +77,7 @@ func TestValidateRequest(t *testing.T) {
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
 				ID:              1},
-			wantErr: api.ErrPasswordNotSpecified,
+			wantErr: autherrors.ErrPasswordNotSpecified,
 		},
 		{
 			name: "api пропущено подтверждение пароля",
@@ -86,7 +87,7 @@ func TestValidateRequest(t *testing.T) {
 				Password: "1234",
 				Role:     int32(desc.Role_ROLE_USER),
 				ID:       1},
-			wantErr: api.ErrPasswordConfirmNotSpecified,
+			wantErr: autherrors.ErrPasswordConfirmNotSpecified,
 		},
 		{
 			name: "api не указана роль",
@@ -97,7 +98,7 @@ func TestValidateRequest(t *testing.T) {
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_UNSPECIFIED),
 				ID:              1},
-			wantErr: api.ErrRoleNotSpecified,
+			wantErr: autherrors.ErrRoleNotSpecified,
 		},
 		{
 			name: "api не существующая роль",
@@ -108,7 +109,7 @@ func TestValidateRequest(t *testing.T) {
 				PasswordConfirm: "1234",
 				Role:            99,
 				ID:              1},
-			wantErr: api.ErrInvalidRole,
+			wantErr: autherrors.ErrInvalidRole,
 		},
 		{
 			name: "api ошибочный id",
@@ -119,7 +120,7 @@ func TestValidateRequest(t *testing.T) {
 				PasswordConfirm: "1234",
 				Role:            int32(desc.Role_ROLE_USER),
 				ID:              0},
-			wantErr: api.ErrInvalidID,
+			wantErr: autherrors.ErrInvalidID,
 		},
 	}
 
