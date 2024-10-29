@@ -28,12 +28,11 @@ func TestUpdateUserInfo(t *testing.T) {
 	}
 
 	var (
-		ctx   = context.Background()
-		mc    = minimock.NewController(t)
-		email = gofakeit.Email()
-		name  = gofakeit.Name()
-		role  = desc.Role_ROLE_ADMIN
-		// time    = utils.TimeNowUTC3()
+		ctx     = context.Background()
+		mc      = minimock.NewController(t)
+		email   = gofakeit.Email()
+		name    = gofakeit.Name()
+		role    = desc.Role_ROLE_ADMIN
 		tempErr = errors.New("service updateUser error")
 
 		req = &desc.UpdateRequest{
@@ -51,7 +50,6 @@ func TestUpdateUserInfo(t *testing.T) {
 		}
 	)
 
-	// Регистрируем очистку для minimock
 	t.Cleanup(mc.Finish)
 
 	tests := []struct {
@@ -67,7 +65,7 @@ func TestUpdateUserInfo(t *testing.T) {
 				ctx: ctx,
 				req: req,
 			},
-			want: &emptypb.Empty{}, // ожидаем пустой ответ в случае успеха
+			want: &emptypb.Empty{},
 			err:  nil,
 			authServiceMockFunc: func(mc *minimock.Controller) service.AuthService {
 				mock := serviceMock.NewAuthServiceMock(mc)
@@ -100,7 +98,6 @@ func TestUpdateUserInfo(t *testing.T) {
 
 			got, err := api.UpdateUserInfo(tt.args.ctx, tt.args.req)
 
-			// Проверяем ошибку
 			if tt.err != nil {
 				require.Error(t, err)
 				require.EqualError(t, err, tt.err.Error())
@@ -108,7 +105,6 @@ func TestUpdateUserInfo(t *testing.T) {
 				require.NoError(t, err)
 			}
 
-			// Проверяем результат
 			require.Equal(t, tt.want, got)
 		})
 	}

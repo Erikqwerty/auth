@@ -12,7 +12,6 @@ func ToUserInfoFromRepo(modeldb *modelRepo.User) *model.UserInfo {
 		Email:        modeldb.Email,
 		PasswordHash: modeldb.PasswordHash,
 		RoleID:       modeldb.RoleID,
-		CreatedAt:    modeldb.CreatedAt,
 	}
 	return &model.UserInfo{
 		ID:         modeldb.ID,

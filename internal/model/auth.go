@@ -19,13 +19,13 @@ type CreateUser struct {
 	Email        string
 	PasswordHash string
 	RoleID       int32
-	CreatedAt    time.Time
 }
 
 // UserInfo - структра представляющая информацию о пользователе
 type UserInfo struct {
 	ID int64
 	CreateUser
+	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 

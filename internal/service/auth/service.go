@@ -10,7 +10,6 @@ import (
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	dev "github.com/erikqwerty/auth/internal/service"
-	"github.com/erikqwerty/auth/pkg/utils"
 )
 
 var _ dev.AuthService = (*service)(nil)
@@ -43,7 +42,6 @@ func prepareUserForCreate(user *model.CreateUser) error {
 	}
 
 	user.PasswordHash = passHash
-	user.CreatedAt = utils.TimeNowUTC3()
 
 	return nil
 }
