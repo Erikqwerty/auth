@@ -56,7 +56,7 @@ func TestCreateUser(t *testing.T) {
 		authRepoMockFunc authRepoMockFunc
 		dbMockFunc       txManagerMockFunc
 	}{{
-		name: "success case",
+		name: "service create user success case",
 		args: args{
 			ctx: ctx,
 			req: req,
@@ -79,7 +79,11 @@ func TestCreateUser(t *testing.T) {
 			}).Return(nil)
 			return mock
 		},
-	}}
+	},
+		{
+			name: "service create user error case",
+		},
+	}
 
 	for _, tt := range tests {
 		tt := tt

@@ -27,7 +27,7 @@ func TestValidateRequest(t *testing.T) {
 		wantErr error
 	}{
 		{
-			name: "валидный запрос",
+			name: "api валидный запрос",
 			req: TestRequest{
 				Email:           gofakeit.Email(),
 				Name:            gofakeit.Name(),
@@ -38,7 +38,7 @@ func TestValidateRequest(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "пропущен email",
+			name: "api пропущен email",
 			req: TestRequest{
 				Name:            gofakeit.Name(),
 				Password:        "1234",
@@ -48,7 +48,7 @@ func TestValidateRequest(t *testing.T) {
 			wantErr: api.ErrEmailNotSpecified,
 		},
 		{
-			name: "невалидный email",
+			name: "api невалидный email",
 			req: TestRequest{
 				Email:           gofakeit.Name(),
 				Name:            gofakeit.Name(),
@@ -59,7 +59,7 @@ func TestValidateRequest(t *testing.T) {
 			wantErr: api.ErrInvalidEmail,
 		},
 		{
-			name: "пропущено имя",
+			name: "api пропущено имя",
 			req: TestRequest{
 				Email:           gofakeit.Email(),
 				Password:        "1234",
@@ -69,7 +69,7 @@ func TestValidateRequest(t *testing.T) {
 			wantErr: api.ErrNameNotSpecified,
 		},
 		{
-			name: "пропущен пароль",
+			name: "api пропущен пароль",
 			req: TestRequest{
 				Email:           gofakeit.Email(),
 				Name:            "Test",
@@ -79,7 +79,7 @@ func TestValidateRequest(t *testing.T) {
 			wantErr: api.ErrPasswordNotSpecified,
 		},
 		{
-			name: "пропущено подтверждение пароля",
+			name: "api пропущено подтверждение пароля",
 			req: TestRequest{
 				Email:    gofakeit.Email(),
 				Name:     "Test",
@@ -89,7 +89,7 @@ func TestValidateRequest(t *testing.T) {
 			wantErr: api.ErrPasswordConfirmNotSpecified,
 		},
 		{
-			name: "не указана роль",
+			name: "api не указана роль",
 			req: TestRequest{
 				Email:           gofakeit.Email(),
 				Name:            "Test",
@@ -100,7 +100,7 @@ func TestValidateRequest(t *testing.T) {
 			wantErr: api.ErrRoleNotSpecified,
 		},
 		{
-			name: "не существующая роль",
+			name: "api не существующая роль",
 			req: TestRequest{
 				Email:           gofakeit.Email(),
 				Name:            "Test",
@@ -111,7 +111,7 @@ func TestValidateRequest(t *testing.T) {
 			wantErr: api.ErrInvalidRole,
 		},
 		{
-			name: "ошибочный id",
+			name: "api ошибочный id",
 			req: TestRequest{
 				Email:           gofakeit.Email(),
 				Name:            "Test",

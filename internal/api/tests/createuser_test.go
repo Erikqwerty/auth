@@ -62,7 +62,7 @@ func TestCreateUser(t *testing.T) {
 		authServiceMockFunc authServiceMockFunc
 	}{
 		{
-			name: "success case",
+			name: "api create user success case",
 			args: args{
 				ctx: ctx,
 				req: req,
@@ -76,7 +76,7 @@ func TestCreateUser(t *testing.T) {
 			},
 		},
 		{
-			name: "service error case",
+			name: "api crate user error case",
 			args: args{
 				ctx: ctx,
 				req: req,

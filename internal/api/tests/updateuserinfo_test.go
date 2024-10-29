@@ -60,7 +60,7 @@ func TestUpdateUserInfo(t *testing.T) {
 		authServiceMockFunc authServiceMockFunc
 	}{
 		{
-			name: "success case",
+			name: "api update user info success case",
 			args: args{
 				ctx: ctx,
 				req: req,
@@ -74,7 +74,7 @@ func TestUpdateUserInfo(t *testing.T) {
 			},
 		},
 		{
-			name: "service error case",
+			name: "api update user info error case",
 			args: args{
 				ctx: ctx,
 				req: req,

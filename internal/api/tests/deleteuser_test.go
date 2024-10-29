@@ -46,7 +46,7 @@ func TestDeleteUser(t *testing.T) {
 		authServiceMockFunc authServiceMockFunc
 	}{
 		{
-			name: "success case",
+			name: "api delete user success case",
 			args: args{
 				ctx: ctx,
 				req: req,
@@ -59,7 +59,7 @@ func TestDeleteUser(t *testing.T) {
 			},
 		},
 		{
-			name: "service error case",
+			name: "api delete user error case",
 			args: args{
 				ctx: ctx,
 				req: req,

@@ -72,7 +72,7 @@ func TestGetUserInfo(t *testing.T) {
 		authServiceMockFunc authServiceMockFunc
 	}{
 		{
-			name: "success case",
+			name: "api get indo user success case",
 			args: args{
 				ctx: ctx,
 				req: req,
@@ -86,7 +86,7 @@ func TestGetUserInfo(t *testing.T) {
 			},
 		},
 		{
-			name: "service error case",
+			name: "api get info user error case",
 			args: args{
 				ctx: ctx,
 				req: req,
