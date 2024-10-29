@@ -11,14 +11,18 @@ func (s *service) GetUser(ctx context.Context, email string) (*model.UserInfo, e
 	user := &model.UserInfo{}
 
 	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
-		var errTX error
+		var errTx error
 
-		user, errTX = s.authRepository.ReadUser(ctx, email)
-		if errTX != nil {
-			return errTX
+		user, errTx = s.authRepository.ReadUser(ctx, email)
+		if errTx != nil {
+			return errTx
 		}
 
-		if errTx := s.writeLog(ctx, actionTypeGet); errTx != nil {
+		errTx = s.authRepository.CreateLog(ctx, &model.Log{
+			ActionType:    actionTypeGet,
+			ActionDetails: details(ctx),
+		})
+		if errTx != nil {
 			return errTx
 		}
 

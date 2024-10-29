@@ -49,6 +49,7 @@ func TestCreateUser(t *testing.T) {
 
 		repoErr = errors.New("репо ошибка")
 	)
+	t.Cleanup(mc.Finish)
 
 	tests := []struct {
 		name             string
@@ -175,10 +176,10 @@ func TestCreateUser(t *testing.T) {
 			name: "service structure CreateUser nil",
 			args: args{
 				ctx: ctx,
-				req: nil, // Передаем nil вместо структуры CreateUser
+				req: nil,
 			},
 			want: 0,
-			err:  autherrors.ErrCreateUserNil, // Ожидаемая ошибка при nil
+			err:  autherrors.ErrCreateUserNil,
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				return dbMock.NewTxManagerMock(mc)
 			},

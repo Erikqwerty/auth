@@ -31,7 +31,11 @@ func (s *service) CreateUser(ctx context.Context, user *model.CreateUser) (int64
 			return errTx
 		}
 
-		if errTx := s.writeLog(ctx, actionTypeCreate); errTx != nil {
+		errTx = s.authRepository.CreateLog(ctx, &model.Log{
+			ActionType:    actionTypeCreate,
+			ActionDetails: details(ctx),
+		})
+		if errTx != nil {
 			return errTx
 		}
 

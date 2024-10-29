@@ -9,12 +9,16 @@ import (
 // UpdateUser - обновить информацию о пользователе
 func (s *service) UpdateUser(ctx context.Context, user *model.UpdateUser) error {
 	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
-		errTX := s.authRepository.UpdateUser(ctx, user)
-		if errTX != nil {
-			return errTX
+		errTx := s.authRepository.UpdateUser(ctx, user)
+		if errTx != nil {
+			return errTx
 		}
 
-		if errTx := s.writeLog(ctx, actionTypeUpdate); errTx != nil {
+		errTx = s.authRepository.CreateLog(ctx, &model.Log{
+			ActionType:    actionTypeUpdate,
+			ActionDetails: details(ctx),
+		})
+		if errTx != nil {
 			return errTx
 		}
 
