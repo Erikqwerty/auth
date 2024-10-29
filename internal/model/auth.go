@@ -24,6 +24,7 @@ type CreateUser struct {
 	RoleID       int32
 }
 
+// Validate - используйте для проверки СreateUser на ожидаемые поля
 func (u *CreateUser) Validate() error {
 	switch {
 	case u.Name == "":

@@ -72,7 +72,7 @@ func TestCreateUser(t *testing.T) {
 			})
 			return mock
 		},
-		authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+		authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 			mock := repoMock.NewAuthRepositoryMock(t)
 			mock.CreateUserMock.Expect(ctx, req).Return(id, nil)
 			mock.CreateLogMock.Expect(ctx, &model.Log{
@@ -97,7 +97,7 @@ func TestCreateUser(t *testing.T) {
 				})
 				return mock
 			},
-			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
 				mock.CreateUserMock.Expect(ctx, req).Return(0, repoErr)
 				return mock
@@ -116,7 +116,7 @@ func TestCreateUser(t *testing.T) {
 			},
 			want: 0,
 			err:  autherrors.ErrInvalidEmail,
-			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				// Ожидается, что репозиторий не будет вызван из-за ошибки валидации
 				return repoMock.NewAuthRepositoryMock(t)
 			},
@@ -136,12 +136,12 @@ func TestCreateUser(t *testing.T) {
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				mock := dbMock.NewTxManagerMock(mc)
 				// симулируем сбой в транзакции
-				mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
+				mock.ReadCommittedMock.Set(func(_ context.Context, _ db.Handler) error {
 					return errors.New("transaction failed") // возврат ошибки
 				})
 				return mock
 			},
-			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				// Ожидается, что репозиторий не будет вызван из-за ошибки транзакции
 				return repoMock.NewAuthRepositoryMock(t)
 			},
@@ -161,7 +161,7 @@ func TestCreateUser(t *testing.T) {
 				})
 				return mock
 			},
-			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
 				mock.CreateUserMock.Expect(ctx, req).Return(id, nil)
 				mock.CreateLogMock.Expect(ctx, &model.Log{
@@ -169,6 +169,21 @@ func TestCreateUser(t *testing.T) {
 					ActionDetails: "детальная информация отсутствует",
 				}).Return(errors.New("log writing failed"))
 				return mock
+			},
+		},
+		{
+			name: "service structure CreateUser nil",
+			args: args{
+				ctx: ctx,
+				req: nil, // Передаем nil вместо структуры CreateUser
+			},
+			want: 0,
+			err:  autherrors.ErrCreateUserNil, // Ожидаемая ошибка при nil
+			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
+				return dbMock.NewTxManagerMock(mc)
+			},
+			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
+				return repoMock.NewAuthRepositoryMock(t)
 			},
 		},
 	}

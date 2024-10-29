@@ -24,6 +24,8 @@ var (
 	ErrInvalidID = errors.New("id удаляемого пользователя не может быть равен 0")
 )
 
+// Ошибки сервисного слоя
 var (
-	ErrCreateUserNil = errors.New("invalid data")
+	// не были переданны данные пользователя
+	ErrCreateUserNil = errors.New("не были переданны данные пользователя")
 )
