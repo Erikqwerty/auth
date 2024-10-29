@@ -54,8 +54,6 @@ func TestCreateUser(t *testing.T) {
 		tempErr = errors.New("service create error")
 	)
 
-	t.Cleanup(mc.Finish)
-
 	tests := []struct {
 		name                string
 		args                args

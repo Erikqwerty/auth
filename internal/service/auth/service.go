@@ -34,7 +34,7 @@ func NewService(authRepository repository.AuthRepository, txManager db.TxManager
 	}
 }
 
-// prepareUserForCreate - добавляем в model.User хеш пароля и задаем время создания и обновления пользователя
+// prepareUserForCreate - добавляем в model.User хеш пароля
 func prepareUserForCreate(user *model.CreateUser) error {
 	passHash, err := hashPassword(user.PasswordHash)
 	if err != nil {
@@ -61,7 +61,11 @@ func details(ctx context.Context) string {
 	info := "Адрес:"
 
 	peer, _ := peer.FromContext(ctx)
-	info += peer.Addr.String()
+	if peer != nil {
+		info += peer.Addr.String()
+	} else {
+		info = "детальная информация отсутствует"
+	}
 
 	return info
 }
