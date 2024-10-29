@@ -2,6 +2,9 @@ package model
 
 import (
 	"time"
+
+	"github.com/erikqwerty/auth/internal/autherrors"
+	"github.com/erikqwerty/auth/pkg/utils"
 )
 
 // User - структура, представляющая пользователя в базе данных.
@@ -19,6 +22,25 @@ type CreateUser struct {
 	Email        string
 	PasswordHash string
 	RoleID       int32
+}
+
+func (u *CreateUser) Validate() error {
+	switch {
+	case u.Name == "":
+		return autherrors.ErrNameNotSpecified
+	case u.Email == "":
+		return autherrors.ErrEmailNotSpecified
+	case !utils.IsValidEmail(u.Email):
+		return autherrors.ErrInvalidEmail
+	case u.PasswordHash == "":
+		return autherrors.ErrPasswordNotSpecified
+	case u.RoleID == 0:
+		return autherrors.ErrRoleNotSpecified
+	case u.RoleID > 2:
+		return autherrors.ErrInvalidRole
+	}
+
+	return nil
 }
 
 // UserInfo - структра представляющая информацию о пользователе
