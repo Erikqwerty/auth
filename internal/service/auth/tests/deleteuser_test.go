@@ -57,7 +57,7 @@ func TestDeleteUser(t *testing.T) {
 				})
 				return mock
 			},
-			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
 				mock.DeleteUserMock.Expect(ctx, req).Return(nil)
 				mock.CreateLogMock.Expect(ctx, &model.Log{
@@ -81,7 +81,7 @@ func TestDeleteUser(t *testing.T) {
 				})
 				return mock
 			},
-			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
 				mock.DeleteUserMock.Expect(ctx, req).Return(repoErr)
 				return mock
