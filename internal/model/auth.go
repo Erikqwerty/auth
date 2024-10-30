@@ -62,7 +62,7 @@ type UpdateUser struct {
 
 // Role - структура, представляющая роль пользователя в базе данных.
 type Role struct {
-	ID       int64
+	ID       int32
 	RoleName string
 }
 
@@ -71,4 +71,14 @@ type Log struct {
 	ActionType      string
 	ActionDetails   string
 	ActionTimestamp time.Time
+}
+
+// UserCache - структура для кеширования пользователя в redis
+type UserCache struct {
+	ID        string
+	Email     string
+	Name      string
+	RoleID    int32
+	CreatedAt time.Time
+	UpdatedAt *time.Time
 }

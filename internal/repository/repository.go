@@ -29,3 +29,8 @@ type RepoLoger interface {
 	// CreateLog - Записывает действие в бд в лог таблицу
 	CreateLog(ctx context.Context, log *model.Log) error
 }
+
+type UserCache interface {
+	SetUser(ctx context.Context, email string, user *model.UserCache) error
+	GetUser(ctx context.Context, email string) (*model.UserCache, error)
+}

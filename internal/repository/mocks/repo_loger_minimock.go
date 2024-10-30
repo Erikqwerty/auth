@@ -10,9 +10,8 @@ import (
 	mm_atomic "sync/atomic"
 	mm_time "time"
 
-	"github.com/gojuno/minimock/v3"
-
 	"github.com/erikqwerty/auth/internal/model"
+	"github.com/gojuno/minimock/v3"
 )
 
 // RepoLogerMock implements mm_repository.RepoLoger

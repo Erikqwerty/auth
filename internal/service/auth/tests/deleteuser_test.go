@@ -22,6 +22,7 @@ func TestDeleteUser(t *testing.T) {
 
 	type authRepoMockFunc func(mc *minimock.Controller) repository.AuthRepository
 	type txManagerMockFunc func(mc *minimock.Controller) db.TxManager
+	type userCacheMockFunc func(mc *minimock.Controller) repository.UserCache
 
 	type args struct {
 		ctx context.Context
@@ -37,11 +38,12 @@ func TestDeleteUser(t *testing.T) {
 	)
 
 	tests := []struct {
-		name             string
-		args             args
-		err              error
-		dbMockFunc       txManagerMockFunc
-		authRepoMockFunc authRepoMockFunc
+		name              string
+		args              args
+		err               error
+		dbMockFunc        txManagerMockFunc
+		authRepoMockFunc  authRepoMockFunc
+		userCacheMockFunc userCacheMockFunc
 	}{
 		{
 			name: "service delete useer succes case",
@@ -66,6 +68,10 @@ func TestDeleteUser(t *testing.T) {
 				}).Return(nil)
 				return mock
 			},
+			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
+				mock := repoMock.NewUserCacheMock(t)
+				return mock
+			},
 		},
 		{
 			name: "service delete useer error case",
@@ -86,6 +92,10 @@ func TestDeleteUser(t *testing.T) {
 				mock.DeleteUserMock.Expect(ctx, req).Return(repoErr)
 				return mock
 			},
+			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
+				mock := repoMock.NewUserCacheMock(t)
+				return mock
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -94,8 +104,9 @@ func TestDeleteUser(t *testing.T) {
 			t.Parallel()
 			authRepoMock := tt.authRepoMockFunc(mc)
 			txManagerMock := tt.dbMockFunc(mc)
+			cacheMock := tt.userCacheMockFunc(mc)
 
-			servic := auth.NewService(authRepoMock, txManagerMock)
+			servic := auth.NewService(authRepoMock, txManagerMock, cacheMock)
 
 			err := servic.DeleteUser(tt.args.ctx, tt.args.req)
 			require.Equal(t, tt.err, err)

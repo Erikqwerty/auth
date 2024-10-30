@@ -23,13 +23,19 @@ const (
 
 type service struct {
 	authRepository repository.AuthRepository
+	userCache      repository.UserCache
 	txManager      db.TxManager
 }
 
 // NewService - создает экземляр сервиса
-func NewService(authRepository repository.AuthRepository, txManager db.TxManager) dev.AuthService {
+func NewService(
+	authRepository repository.AuthRepository,
+	txManager db.TxManager,
+	userCache repository.UserCache) dev.AuthService {
+
 	return &service{
 		authRepository: authRepository,
+		userCache:      userCache,
 		txManager:      txManager,
 	}
 }

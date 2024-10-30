@@ -10,6 +10,11 @@ import (
 func (s *service) GetUser(ctx context.Context, email string) (*model.UserInfo, error) {
 	user := &model.UserInfo{}
 
+	// u, err := s.userCache.GetUser(ctx, email)
+	// if err == nil {
+	// 	return user, nil
+	// }
+
 	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTx error
 

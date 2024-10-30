@@ -23,6 +23,7 @@ func TestGetUser(t *testing.T) {
 
 	type authRepoMockFunc func(mc *minimock.Controller) repository.AuthRepository
 	type txManagerMockFunc func(mc *minimock.Controller) db.TxManager
+	type userCacheMockFunc func(mc *minimock.Controller) repository.UserCache
 
 	type args struct {
 		ctx context.Context
@@ -54,12 +55,13 @@ func TestGetUser(t *testing.T) {
 	)
 
 	tests := []struct {
-		name             string
-		args             args
-		want             *model.UserInfo
-		err              error
-		dbMockFunc       txManagerMockFunc
-		authRepoMockFunc authRepoMockFunc
+		name              string
+		args              args
+		want              *model.UserInfo
+		err               error
+		dbMockFunc        txManagerMockFunc
+		authRepoMockFunc  authRepoMockFunc
+		userCacheMockFunc userCacheMockFunc
 	}{
 		{
 			name: "service get user info success case",
@@ -85,6 +87,10 @@ func TestGetUser(t *testing.T) {
 				}).Return(nil)
 				return mock
 			},
+			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
+				mock := repoMock.NewUserCacheMock(t)
+				return mock
+			},
 		},
 		{
 			name: "service get user info error case",
@@ -106,6 +112,10 @@ func TestGetUser(t *testing.T) {
 				mock.ReadUserMock.Expect(ctx, req).Return(nil, repoErr)
 				return mock
 			},
+			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
+				mock := repoMock.NewUserCacheMock(t)
+				return mock
+			},
 		},
 	}
 
@@ -115,8 +125,9 @@ func TestGetUser(t *testing.T) {
 			t.Parallel()
 			authRepoMock := tt.authRepoMockFunc(mc)
 			txManagerMock := tt.dbMockFunc(mc)
+			cacheMock := tt.userCacheMockFunc(mc)
 
-			servic := auth.NewService(authRepoMock, txManagerMock)
+			servic := auth.NewService(authRepoMock, txManagerMock, cacheMock)
 
 			user, err := servic.GetUser(tt.args.ctx, tt.args.req)
 			require.Equal(t, tt.err, err)

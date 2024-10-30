@@ -1,19 +1,16 @@
-package config
+package env
 
 import (
 	"errors"
 	"os"
+
+	"github.com/erikqwerty/auth/internal/config"
 )
 
 const (
 	// dsnEnvName - имя переменной окружения для строки подключения к PostgreSQL.
 	dsnEnvName = "PG_DSN"
 )
-
-// PGConfig - интерфейс для конфигурации подключения к PostgreSQL.
-type PGConfig interface {
-	DSN() string // DSN возвращает строку подключения к PostgreSQL
-}
 
 // pgConfig - структура, реализующая интерфейс PGConfig для хранения DSN.
 type pgConfig struct {
@@ -22,7 +19,7 @@ type pgConfig struct {
 
 // NewPGConfig - создает новую конфигурацию для PostgreSQL, читая DSN из переменной окружения.
 // Возвращает ошибку, если переменная окружения отсутствует.
-func NewPGConfig() (PGConfig, error) {
+func NewPGConfig() (config.PGConfig, error) {
 	dsn := os.Getenv(dsnEnvName)
 	if len(dsn) == 0 {
 		return nil, errors.New("pg dsn not found")
