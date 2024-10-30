@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, dev-task-4]
   pull_request:
     branches: [main, master]
 
@@ -12,6 +12,7 @@ env:
   CONTAINER_NAME: "auth-server-container"
   DB_CONTAINER_NAME: "auth-db-container"
   DB_IMAGE_NAME: "postgres:13"
+  DB_REDIS_CONTAINER_NAME: "auth-cache-redis"
 
 jobs:
   # Go Job - выполняет билд, тесты и линтинг кода
@@ -99,7 +100,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSHKEY }}
           port: 33
-          envs: IMAGE_NAME, REGISTRY, GITHUB_SHA, CONTAINER_NAME, DB_CONTAINER_NAME, DB_IMAGE_NAME
+          envs: IMAGE_NAME, REGISTRY, GITHUB_SHA, CONTAINER_NAME, DB_CONTAINER_NAME, DB_IMAGE_NAME, $DB_REDIS_CONTAINER_NAME
           script: |
             # Создаем файл .env
             echo "PG_DATABASE_NAME=auth" >> .env
@@ -130,6 +131,17 @@ jobs:
             -v postgres_data:/var/lib/postgresql/auth_data \
             -p 50062:5432 $DB_IMAGE_NAME
             fi
+
+            # запуск redis для кеширования
+            if [ "$(docker ps -q -f name=$DB_REDIS_CONTAINER_NAME)" ]; then
+            echo "Контейнер кеша redis уже запущен"
+            else
+            docker run -d --name $DB_REDIS_CONTAINER_NAME \
+            --network auth-service-network \
+            -v redis_data:/var/lib/redis/auth_data \
+            -p 127.0.0.1:56379:6379 redis:7.2.6-alpine
+            fi
+
            
             # Запускаем мигратор
             docker stop auth_migrator || echo "Контейнер auth_migrator не запущен"

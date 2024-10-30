@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   postgres_volume:
+  redis-data:
 
 
 services:
@@ -25,6 +26,16 @@ services:
     restart: on-failure
     environment:
       DB_HOST: pg
+    networks:
+      - auth-db-network
+
+  redis:
+    image: redis:7.2.6-alpine
+    container_name: auth-cache-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/var/lib/redis/data
     networks:
       - auth-db-network
 
