@@ -8,6 +8,7 @@ package userapi_v1
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -24,13 +25,13 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserAPIV1Client interface {
 	// Метод для создания нового пользователя
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	CreateUser(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	// Метод для получения данных пользователя
-	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	GetUserInfo(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	// Метод для обновления данных пользователя
-	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateUserInfo(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Метод для удаления пользователя
-	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteUser(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type userAPIV1Client struct {
@@ -41,36 +42,36 @@ func NewUserAPIV1Client(cc grpc.ClientConnInterface) UserAPIV1Client {
 	return &userAPIV1Client{cc}
 }
 
-func (c *userAPIV1Client) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+func (c *userAPIV1Client) CreateUser(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
 	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAPIV1Client) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
+func (c *userAPIV1Client) GetUserInfo(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
 	out := new(GetResponse)
-	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/Get", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/GetUserInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAPIV1Client) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *userAPIV1Client) UpdateUserInfo(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/Update", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/UpdateUserInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAPIV1Client) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *userAPIV1Client) DeleteUser(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userapi_v1.UserAPIV1/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -82,13 +83,13 @@ func (c *userAPIV1Client) Delete(ctx context.Context, in *DeleteRequest, opts ..
 // for forward compatibility
 type UserAPIV1Server interface {
 	// Метод для создания нового пользователя
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	CreateUser(context.Context, *CreateRequest) (*CreateResponse, error)
 	// Метод для получения данных пользователя
-	Get(context.Context, *GetRequest) (*GetResponse, error)
+	GetUserInfo(context.Context, *GetRequest) (*GetResponse, error)
 	// Метод для обновления данных пользователя
-	Update(context.Context, *UpdateRequest) (*emptypb.Empty, error)
+	UpdateUserInfo(context.Context, *UpdateRequest) (*emptypb.Empty, error)
 	// Метод для удаления пользователя
-	Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error)
+	DeleteUser(context.Context, *DeleteRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUserAPIV1Server()
 }
 
@@ -96,17 +97,17 @@ type UserAPIV1Server interface {
 type UnimplementedUserAPIV1Server struct {
 }
 
-func (UnimplementedUserAPIV1Server) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+func (UnimplementedUserAPIV1Server) CreateUser(context.Context, *CreateRequest) (*CreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUserAPIV1Server) Get(context.Context, *GetRequest) (*GetResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+func (UnimplementedUserAPIV1Server) GetUserInfo(context.Context, *GetRequest) (*GetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
 }
-func (UnimplementedUserAPIV1Server) Update(context.Context, *UpdateRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+func (UnimplementedUserAPIV1Server) UpdateUserInfo(context.Context, *UpdateRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserInfo not implemented")
 }
-func (UnimplementedUserAPIV1Server) Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+func (UnimplementedUserAPIV1Server) DeleteUser(context.Context, *DeleteRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedUserAPIV1Server) mustEmbedUnimplementedUserAPIV1Server() {}
 
@@ -121,74 +122,74 @@ func RegisterUserAPIV1Server(s grpc.ServiceRegistrar, srv UserAPIV1Server) {
 	s.RegisterService(&UserAPIV1_ServiceDesc, srv)
 }
 
-func _UserAPIV1_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserAPIV1_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIV1Server).Create(ctx, in)
+		return srv.(UserAPIV1Server).CreateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userapi_v1.UserAPIV1/Create",
+		FullMethod: "/userapi_v1.UserAPIV1/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIV1Server).Create(ctx, req.(*CreateRequest))
+		return srv.(UserAPIV1Server).CreateUser(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAPIV1_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserAPIV1_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIV1Server).Get(ctx, in)
+		return srv.(UserAPIV1Server).GetUserInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userapi_v1.UserAPIV1/Get",
+		FullMethod: "/userapi_v1.UserAPIV1/GetUserInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIV1Server).Get(ctx, req.(*GetRequest))
+		return srv.(UserAPIV1Server).GetUserInfo(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAPIV1_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserAPIV1_UpdateUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIV1Server).Update(ctx, in)
+		return srv.(UserAPIV1Server).UpdateUserInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userapi_v1.UserAPIV1/Update",
+		FullMethod: "/userapi_v1.UserAPIV1/UpdateUserInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIV1Server).Update(ctx, req.(*UpdateRequest))
+		return srv.(UserAPIV1Server).UpdateUserInfo(ctx, req.(*UpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAPIV1_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserAPIV1_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAPIV1Server).Delete(ctx, in)
+		return srv.(UserAPIV1Server).DeleteUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/userapi_v1.UserAPIV1/Delete",
+		FullMethod: "/userapi_v1.UserAPIV1/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAPIV1Server).Delete(ctx, req.(*DeleteRequest))
+		return srv.(UserAPIV1Server).DeleteUser(ctx, req.(*DeleteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -201,20 +202,20 @@ var UserAPIV1_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserAPIV1Server)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Create",
-			Handler:    _UserAPIV1_Create_Handler,
+			MethodName: "CreateUser",
+			Handler:    _UserAPIV1_CreateUser_Handler,
 		},
 		{
-			MethodName: "Get",
-			Handler:    _UserAPIV1_Get_Handler,
+			MethodName: "GetUserInfo",
+			Handler:    _UserAPIV1_GetUserInfo_Handler,
 		},
 		{
-			MethodName: "Update",
-			Handler:    _UserAPIV1_Update_Handler,
+			MethodName: "UpdateUserInfo",
+			Handler:    _UserAPIV1_UpdateUserInfo_Handler,
 		},
 		{
-			MethodName: "Delete",
-			Handler:    _UserAPIV1_Delete_Handler,
+			MethodName: "DeleteUser",
+			Handler:    _UserAPIV1_DeleteUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
