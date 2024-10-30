@@ -66,7 +66,7 @@ func TestCreateUser(t *testing.T) {
 		},
 		want: id,
 		err:  nil,
-		dbMockFunc: func(mc *minimock.Controller) db.TxManager {
+		dbMockFunc: func(_ *minimock.Controller) db.TxManager {
 			mock := dbMock.NewTxManagerMock(t)
 			mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 				return handler(ctx)
