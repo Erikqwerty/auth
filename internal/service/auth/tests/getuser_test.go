@@ -9,12 +9,12 @@ import (
 	"github.com/gojuno/minimock/v3"
 	"github.com/stretchr/testify/require"
 
-	"github.com/erikqwerty/auth/internal/client/db"
-	dbMock "github.com/erikqwerty/auth/internal/client/db/mocks"
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	repoMock "github.com/erikqwerty/auth/internal/repository/mocks"
 	"github.com/erikqwerty/auth/internal/service/auth"
+	"github.com/erikqwerty/auth/pkg/db"
+	dbMock "github.com/erikqwerty/auth/pkg/db/mocks"
 	"github.com/erikqwerty/auth/pkg/utils"
 )
 

@@ -10,8 +10,9 @@ import (
 	mm_atomic "sync/atomic"
 	mm_time "time"
 
-	mm_db "github.com/erikqwerty/auth/internal/client/db"
 	"github.com/gojuno/minimock/v3"
+
+	mm_db "github.com/erikqwerty/auth/pkg/db"
 )
 
 // TxManagerMock implements mm_db.TxManager

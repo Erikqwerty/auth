@@ -10,12 +10,12 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/erikqwerty/auth/internal/autherrors"
-	"github.com/erikqwerty/auth/internal/client/db"
-	dbMock "github.com/erikqwerty/auth/internal/client/db/mocks"
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	repoMock "github.com/erikqwerty/auth/internal/repository/mocks"
 	"github.com/erikqwerty/auth/internal/service/auth"
+	"github.com/erikqwerty/auth/pkg/db"
+	dbMock "github.com/erikqwerty/auth/pkg/db/mocks"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -67,10 +67,11 @@ func TestCreateUser(t *testing.T) {
 		want: id,
 		err:  nil,
 		dbMockFunc: func(mc *minimock.Controller) db.TxManager {
-			mock := dbMock.NewTxManagerMock(mc)
+			mock := dbMock.NewTxManagerMock(t)
 			mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 				return handler(ctx)
 			})
+
 			return mock
 		},
 		authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {

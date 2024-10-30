@@ -5,15 +5,15 @@ import (
 	"log"
 
 	"github.com/erikqwerty/auth/internal/api"
-	"github.com/erikqwerty/auth/internal/client/db"
-	"github.com/erikqwerty/auth/internal/client/db/pg"
-	"github.com/erikqwerty/auth/internal/client/db/transaction"
-	"github.com/erikqwerty/auth/internal/closer"
 	"github.com/erikqwerty/auth/internal/config"
 	"github.com/erikqwerty/auth/internal/repository"
 	authrepository "github.com/erikqwerty/auth/internal/repository/auth"
 	"github.com/erikqwerty/auth/internal/service"
 	authservice "github.com/erikqwerty/auth/internal/service/auth"
+	"github.com/erikqwerty/auth/pkg/closer"
+	"github.com/erikqwerty/auth/pkg/db"
+	"github.com/erikqwerty/auth/pkg/db/pg"
+	"github.com/erikqwerty/auth/pkg/db/transaction"
 )
 
 type serviceProvider struct {
