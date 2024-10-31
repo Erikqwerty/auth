@@ -19,16 +19,16 @@ type UserCacheMock struct {
 	t          minimock.Tester
 	finishOnce sync.Once
 
-	funcGetUser          func(ctx context.Context, email string) (up1 *model.UserCache, err error)
+	funcGetUser          func(ctx context.Context, email string) (up1 *model.UserInfo, err error)
 	funcGetUserOrigin    string
 	inspectFuncGetUser   func(ctx context.Context, email string)
 	afterGetUserCounter  uint64
 	beforeGetUserCounter uint64
 	GetUserMock          mUserCacheMockGetUser
 
-	funcSetUser          func(ctx context.Context, email string, user *model.UserCache) (err error)
+	funcSetUser          func(ctx context.Context, email string, user *model.UserInfo) (err error)
 	funcSetUserOrigin    string
-	inspectFuncSetUser   func(ctx context.Context, email string, user *model.UserCache)
+	inspectFuncSetUser   func(ctx context.Context, email string, user *model.UserInfo)
 	afterSetUserCounter  uint64
 	beforeSetUserCounter uint64
 	SetUserMock          mUserCacheMockSetUser
@@ -91,7 +91,7 @@ type UserCacheMockGetUserParamPtrs struct {
 
 // UserCacheMockGetUserResults contains results of the UserCache.GetUser
 type UserCacheMockGetUserResults struct {
-	up1 *model.UserCache
+	up1 *model.UserInfo
 	err error
 }
 
@@ -195,7 +195,7 @@ func (mmGetUser *mUserCacheMockGetUser) Inspect(f func(ctx context.Context, emai
 }
 
 // Return sets up results that will be returned by UserCache.GetUser
-func (mmGetUser *mUserCacheMockGetUser) Return(up1 *model.UserCache, err error) *UserCacheMock {
+func (mmGetUser *mUserCacheMockGetUser) Return(up1 *model.UserInfo, err error) *UserCacheMock {
 	if mmGetUser.mock.funcGetUser != nil {
 		mmGetUser.mock.t.Fatalf("UserCacheMock.GetUser mock is already set by Set")
 	}
@@ -209,7 +209,7 @@ func (mmGetUser *mUserCacheMockGetUser) Return(up1 *model.UserCache, err error) 
 }
 
 // Set uses given function f to mock the UserCache.GetUser method
-func (mmGetUser *mUserCacheMockGetUser) Set(f func(ctx context.Context, email string) (up1 *model.UserCache, err error)) *UserCacheMock {
+func (mmGetUser *mUserCacheMockGetUser) Set(f func(ctx context.Context, email string) (up1 *model.UserInfo, err error)) *UserCacheMock {
 	if mmGetUser.defaultExpectation != nil {
 		mmGetUser.mock.t.Fatalf("Default expectation is already set for the UserCache.GetUser method")
 	}
@@ -240,7 +240,7 @@ func (mmGetUser *mUserCacheMockGetUser) When(ctx context.Context, email string) 
 }
 
 // Then sets up UserCache.GetUser return parameters for the expectation previously defined by the When method
-func (e *UserCacheMockGetUserExpectation) Then(up1 *model.UserCache, err error) *UserCacheMock {
+func (e *UserCacheMockGetUserExpectation) Then(up1 *model.UserInfo, err error) *UserCacheMock {
 	e.results = &UserCacheMockGetUserResults{up1, err}
 	return e.mock
 }
@@ -267,7 +267,7 @@ func (mmGetUser *mUserCacheMockGetUser) invocationsDone() bool {
 }
 
 // GetUser implements mm_repository.UserCache
-func (mmGetUser *UserCacheMock) GetUser(ctx context.Context, email string) (up1 *model.UserCache, err error) {
+func (mmGetUser *UserCacheMock) GetUser(ctx context.Context, email string) (up1 *model.UserInfo, err error) {
 	mm_atomic.AddUint64(&mmGetUser.beforeGetUserCounter, 1)
 	defer mm_atomic.AddUint64(&mmGetUser.afterGetUserCounter, 1)
 
@@ -424,14 +424,14 @@ type UserCacheMockSetUserExpectation struct {
 type UserCacheMockSetUserParams struct {
 	ctx   context.Context
 	email string
-	user  *model.UserCache
+	user  *model.UserInfo
 }
 
 // UserCacheMockSetUserParamPtrs contains pointers to parameters of the UserCache.SetUser
 type UserCacheMockSetUserParamPtrs struct {
 	ctx   *context.Context
 	email *string
-	user  **model.UserCache
+	user  **model.UserInfo
 }
 
 // UserCacheMockSetUserResults contains results of the UserCache.SetUser
@@ -458,7 +458,7 @@ func (mmSetUser *mUserCacheMockSetUser) Optional() *mUserCacheMockSetUser {
 }
 
 // Expect sets up expected params for UserCache.SetUser
-func (mmSetUser *mUserCacheMockSetUser) Expect(ctx context.Context, email string, user *model.UserCache) *mUserCacheMockSetUser {
+func (mmSetUser *mUserCacheMockSetUser) Expect(ctx context.Context, email string, user *model.UserInfo) *mUserCacheMockSetUser {
 	if mmSetUser.mock.funcSetUser != nil {
 		mmSetUser.mock.t.Fatalf("UserCacheMock.SetUser mock is already set by Set")
 	}
@@ -529,7 +529,7 @@ func (mmSetUser *mUserCacheMockSetUser) ExpectEmailParam2(email string) *mUserCa
 }
 
 // ExpectUserParam3 sets up expected param user for UserCache.SetUser
-func (mmSetUser *mUserCacheMockSetUser) ExpectUserParam3(user *model.UserCache) *mUserCacheMockSetUser {
+func (mmSetUser *mUserCacheMockSetUser) ExpectUserParam3(user *model.UserInfo) *mUserCacheMockSetUser {
 	if mmSetUser.mock.funcSetUser != nil {
 		mmSetUser.mock.t.Fatalf("UserCacheMock.SetUser mock is already set by Set")
 	}
@@ -552,7 +552,7 @@ func (mmSetUser *mUserCacheMockSetUser) ExpectUserParam3(user *model.UserCache) 
 }
 
 // Inspect accepts an inspector function that has same arguments as the UserCache.SetUser
-func (mmSetUser *mUserCacheMockSetUser) Inspect(f func(ctx context.Context, email string, user *model.UserCache)) *mUserCacheMockSetUser {
+func (mmSetUser *mUserCacheMockSetUser) Inspect(f func(ctx context.Context, email string, user *model.UserInfo)) *mUserCacheMockSetUser {
 	if mmSetUser.mock.inspectFuncSetUser != nil {
 		mmSetUser.mock.t.Fatalf("Inspect function is already set for UserCacheMock.SetUser")
 	}
@@ -577,7 +577,7 @@ func (mmSetUser *mUserCacheMockSetUser) Return(err error) *UserCacheMock {
 }
 
 // Set uses given function f to mock the UserCache.SetUser method
-func (mmSetUser *mUserCacheMockSetUser) Set(f func(ctx context.Context, email string, user *model.UserCache) (err error)) *UserCacheMock {
+func (mmSetUser *mUserCacheMockSetUser) Set(f func(ctx context.Context, email string, user *model.UserInfo) (err error)) *UserCacheMock {
 	if mmSetUser.defaultExpectation != nil {
 		mmSetUser.mock.t.Fatalf("Default expectation is already set for the UserCache.SetUser method")
 	}
@@ -593,7 +593,7 @@ func (mmSetUser *mUserCacheMockSetUser) Set(f func(ctx context.Context, email st
 
 // When sets expectation for the UserCache.SetUser which will trigger the result defined by the following
 // Then helper
-func (mmSetUser *mUserCacheMockSetUser) When(ctx context.Context, email string, user *model.UserCache) *UserCacheMockSetUserExpectation {
+func (mmSetUser *mUserCacheMockSetUser) When(ctx context.Context, email string, user *model.UserInfo) *UserCacheMockSetUserExpectation {
 	if mmSetUser.mock.funcSetUser != nil {
 		mmSetUser.mock.t.Fatalf("UserCacheMock.SetUser mock is already set by Set")
 	}
@@ -635,7 +635,7 @@ func (mmSetUser *mUserCacheMockSetUser) invocationsDone() bool {
 }
 
 // SetUser implements mm_repository.UserCache
-func (mmSetUser *UserCacheMock) SetUser(ctx context.Context, email string, user *model.UserCache) (err error) {
+func (mmSetUser *UserCacheMock) SetUser(ctx context.Context, email string, user *model.UserInfo) (err error) {
 	mm_atomic.AddUint64(&mmSetUser.beforeSetUserCounter, 1)
 	defer mm_atomic.AddUint64(&mmSetUser.afterSetUserCounter, 1)
 

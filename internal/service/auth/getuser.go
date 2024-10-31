@@ -10,12 +10,12 @@ import (
 func (s *service) GetUser(ctx context.Context, email string) (*model.UserInfo, error) {
 	user := &model.UserInfo{}
 
-	// u, err := s.userCache.GetUser(ctx, email)
-	// if err == nil {
-	// 	return user, nil
-	// }
+	user, err := s.userCache.GetUser(ctx, email)
+	if err == nil {
+		return user, nil
+	}
 
-	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
+	err = s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTx error
 
 		user, errTx = s.authRepository.ReadUser(ctx, email)
@@ -33,6 +33,12 @@ func (s *service) GetUser(ctx context.Context, email string) (*model.UserInfo, e
 
 		return nil
 	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.userCache.SetUser(ctx, email, user)
 
 	return user, err
 }

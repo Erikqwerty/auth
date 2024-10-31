@@ -28,7 +28,7 @@ func NewCache(client clredis.RedisClient) repository.UserCache {
 }
 
 // SetUser сохраняет пользователя в кеш с email в качестве ключа
-func (c *cache) SetUser(ctx context.Context, email string, user *model.UserCache) error {
+func (c *cache) SetUser(ctx context.Context, email string, user *model.UserInfo) error {
 	if user == nil {
 		return errors.New("пустой пользователь, нечего записывать в кеш")
 	}
@@ -52,7 +52,7 @@ func (c *cache) SetUser(ctx context.Context, email string, user *model.UserCache
 }
 
 // GetUser получает пользователя из кеша по email
-func (c *cache) GetUser(ctx context.Context, email string) (*model.UserCache, error) {
+func (c *cache) GetUser(ctx context.Context, email string) (*model.UserInfo, error) {
 	// Получаем все поля, сохранённые в хеше по ключу email
 	values, err := c.redisClient.HGetAll(ctx, email)
 	if err != nil {

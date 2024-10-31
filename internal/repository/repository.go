@@ -31,6 +31,6 @@ type RepoLoger interface {
 }
 
 type UserCache interface {
-	SetUser(ctx context.Context, email string, user *model.UserCache) error
-	GetUser(ctx context.Context, email string) (*model.UserCache, error)
+	SetUser(ctx context.Context, email string, user *model.UserInfo) error
+	GetUser(ctx context.Context, email string) (*model.UserInfo, error)
 }

@@ -49,7 +49,7 @@ type UserInfo struct {
 	ID int64
 	CreateUser
 	CreatedAt time.Time
-	UpdatedAt time.Time
+	UpdatedAt *time.Time
 }
 
 // UpdateUser -  структра представляющая обновление пользователя
@@ -74,11 +74,12 @@ type Log struct {
 }
 
 // UserCache - структура для кеширования пользователя в redis
-type UserCache struct {
-	ID        string
-	Email     string
-	Name      string
-	RoleID    int32
-	CreatedAt time.Time
-	UpdatedAt *time.Time
-}
+// type UserCache struct {
+// 	ID           string
+// 	Email        string
+// 	Name         string
+// 	PasswordHash string
+// 	RoleID       int32
+// 	CreatedAt    time.Time
+// 	UpdatedAt    *time.Time
+// }

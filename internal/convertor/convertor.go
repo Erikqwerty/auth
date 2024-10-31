@@ -46,6 +46,6 @@ func ToGetResponseFromReadUser(user *model.UserInfo) *desc.GetResponse {
 		Email:     user.Email,
 		Role:      desc.Role(user.RoleID),
 		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdatedAt: timestamppb.New(user.UpdatedAt),
+		UpdatedAt: timestamppb.New(*user.UpdatedAt),
 	}
 }

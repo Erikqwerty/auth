@@ -49,7 +49,7 @@ func TestGetUserInfo(t *testing.T) {
 				RoleID: int32(desc.Role_ROLE_USER),
 			},
 			CreatedAt: time,
-			UpdatedAt: time,
+			UpdatedAt: &time,
 		}
 
 		resp = &desc.GetResponse{

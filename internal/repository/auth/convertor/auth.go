@@ -16,6 +16,6 @@ func ToUserInfoFromRepo(modeldb *modelRepo.User) *model.UserInfo {
 	return &model.UserInfo{
 		ID:         modeldb.ID,
 		CreateUser: createUser,
-		UpdatedAt:  modeldb.UpdatedAt,
+		UpdatedAt:  &modeldb.UpdatedAt,
 	}
 }

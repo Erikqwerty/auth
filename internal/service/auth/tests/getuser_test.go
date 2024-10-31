@@ -50,7 +50,7 @@ func TestGetUser(t *testing.T) {
 				PasswordHash: passhash,
 			},
 			CreatedAt: time,
-			UpdatedAt: time,
+			UpdatedAt: &time,
 		}
 	)
 
