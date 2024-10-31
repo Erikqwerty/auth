@@ -18,6 +18,7 @@ type PGConfig interface {
 	DSN() string // DSN возвращает строку подключения к PostgreSQL
 }
 
+// RedisConfig - определяет методы конфигурации redis
 type RedisConfig interface {
 	Address() string
 	ConnectionTimeout() time.Duration

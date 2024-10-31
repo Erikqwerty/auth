@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Переменные окружения, содержащие настройки для подключения к Redis
 const (
 	redisHostEnvName              = "REDIS_HOST"
 	redisPortEnvName              = "REDIS_PORT"
@@ -17,6 +18,7 @@ const (
 	redisIdleTimeoutEnvName       = "REDIS_IDLE_TIMEOUT_SEC"
 )
 
+// redisConfig содержит настройки подключения к Redis.
 type redisConfig struct {
 	host string
 	port string
@@ -27,6 +29,7 @@ type redisConfig struct {
 	idleTimeout time.Duration
 }
 
+// NewRedisConfig создает новый экземпляр конфигурации Redis, считывая параметры из переменных окружения.
 func NewRedisConfig() (*redisConfig, error) {
 	host := os.Getenv(redisHostEnvName)
 	if len(host) == 0 {
@@ -77,18 +80,22 @@ func NewRedisConfig() (*redisConfig, error) {
 	}, nil
 }
 
+// Address возвращает полное сетевое расположение Redis в формате "host:port".
 func (cfg *redisConfig) Address() string {
 	return net.JoinHostPort(cfg.host, cfg.port)
 }
 
+// ConnectionTimeout возвращает время ожидания соединения Redis.
 func (cfg *redisConfig) ConnectionTimeout() time.Duration {
 	return cfg.connectionTimeout
 }
 
+// MaxIdle возвращает максимальное количество ожидающих соединений в пуле.
 func (cfg *redisConfig) MaxIdle() int {
 	return cfg.maxIdle
 }
 
+// IdleTimeout возвращает время ожидания простоя соединения перед его закрытием.
 func (cfg *redisConfig) IdleTimeout() time.Duration {
 	return cfg.idleTimeout
 }

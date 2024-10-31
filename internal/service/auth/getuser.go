@@ -8,7 +8,7 @@ import (
 
 // GetUser - получение информации о пользователе
 func (s *service) GetUser(ctx context.Context, email string) (*model.UserInfo, error) {
-	user := &model.UserInfo{}
+	// user := &model.UserInfo{}
 
 	user, err := s.userCache.GetUser(ctx, email)
 	if err == nil {

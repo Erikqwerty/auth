@@ -8,6 +8,7 @@ import (
 	modelCache "github.com/erikqwerty/auth/internal/repository/cache/model"
 )
 
+// ToUserCacheModelFromServiceUserCache - конвертирует модель сервисного слоя в модель репо слоя кеш редис
 func ToUserCacheModelFromServiceUserCache(user *model.UserInfo) *modelCache.UserCache {
 	if user == nil {
 		return nil
@@ -30,6 +31,7 @@ func ToUserCacheModelFromServiceUserCache(user *model.UserInfo) *modelCache.User
 	}
 }
 
+// ToServiceUserCacheFromUserCacheModel - конвертирует модель репо слоя кеш редис в модель сервисного слоя
 func ToServiceUserCacheFromUserCacheModel(user *modelCache.UserCache) *model.UserInfo {
 	if user == nil {
 		return nil
