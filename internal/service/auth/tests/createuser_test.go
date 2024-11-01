@@ -50,7 +50,6 @@ func TestCreateUser(t *testing.T) {
 
 		repoErr = errors.New("репо ошибка")
 	)
-	t.Cleanup(mc.Finish)
 
 	tests := []struct {
 		name              string
@@ -233,4 +232,6 @@ func TestCreateUser(t *testing.T) {
 			require.Equal(t, tt.want, ID)
 		})
 	}
+
+	t.Cleanup(mc.Finish)
 }

@@ -124,4 +124,6 @@ func TestUpdateUser(t *testing.T) {
 			require.Equal(t, tt.err, err)
 		})
 	}
+
+	t.Cleanup(mc.Finish)
 }

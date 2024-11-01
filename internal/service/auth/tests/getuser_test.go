@@ -78,8 +78,8 @@ func TestGetUser(t *testing.T) {
 				})
 				return mock
 			},
-			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
-				mock := repoMock.NewAuthRepositoryMock(t)
+			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+				mock := repoMock.NewAuthRepositoryMock(mc)
 				mock.ReadUserMock.Expect(ctx, req).Return(expectedRes, nil)
 				mock.CreateLogMock.Expect(ctx, &model.Log{
 					ActionType:    "GET",
@@ -87,8 +87,12 @@ func TestGetUser(t *testing.T) {
 				}).Return(nil)
 				return mock
 			},
-			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
-				mock := repoMock.NewUserCacheMock(t)
+			userCacheMockFunc: func(mc *minimock.Controller) repository.UserCache {
+				mock := repoMock.NewUserCacheMock(mc)
+				// Симулируем отсутствие данных в кэше на первом вызове
+				mock.GetUserMock.Expect(ctx, req).Return(nil, errors.New("cache miss"))
+				// Ожидаем вызов SetUser после успешного получения данных
+				mock.SetUserMock.Expect(ctx, req, expectedRes).Return(nil)
 				return mock
 			},
 		},
@@ -107,13 +111,16 @@ func TestGetUser(t *testing.T) {
 				})
 				return mock
 			},
-			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
-				mock := repoMock.NewAuthRepositoryMock(t)
+			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
+				mock := repoMock.NewAuthRepositoryMock(mc)
+				// Симулируем ошибку при чтении из репозитория
 				mock.ReadUserMock.Expect(ctx, req).Return(nil, repoErr)
 				return mock
 			},
-			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
-				mock := repoMock.NewUserCacheMock(t)
+			userCacheMockFunc: func(mc *minimock.Controller) repository.UserCache {
+				mock := repoMock.NewUserCacheMock(mc)
+				// Первоначально GetUser возвращает ошибку для запуска транзакции
+				mock.GetUserMock.Expect(ctx, req).Return(nil, errors.New("cache miss"))
 				return mock
 			},
 		},
@@ -127,11 +134,13 @@ func TestGetUser(t *testing.T) {
 			txManagerMock := tt.dbMockFunc(mc)
 			cacheMock := tt.userCacheMockFunc(mc)
 
-			servic := auth.NewService(authRepoMock, txManagerMock, cacheMock)
+			service := auth.NewService(authRepoMock, txManagerMock, cacheMock)
 
-			user, err := servic.GetUser(tt.args.ctx, tt.args.req)
+			user, err := service.GetUser(tt.args.ctx, tt.args.req)
 			require.Equal(t, tt.err, err)
 			require.Equal(t, tt.want, user)
 		})
 	}
+
+	t.Cleanup(mc.Finish)
 }
