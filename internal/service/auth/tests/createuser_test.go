@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/brianvoe/gofakeit/v7"
+	"github.com/erikqwerty/erik-platform/clients/db"
+	dbMock "github.com/erikqwerty/erik-platform/clients/db/mocks"
 	"github.com/gojuno/minimock/v3"
 	"github.com/stretchr/testify/require"
 
@@ -14,8 +16,6 @@ import (
 	"github.com/erikqwerty/auth/internal/repository"
 	repoMock "github.com/erikqwerty/auth/internal/repository/mocks"
 	"github.com/erikqwerty/auth/internal/service/auth"
-	"github.com/erikqwerty/auth/pkg/db"
-	dbMock "github.com/erikqwerty/auth/pkg/db/mocks"
 )
 
 func TestCreateUser(t *testing.T) {

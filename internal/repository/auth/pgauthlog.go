@@ -4,9 +4,9 @@ import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/erikqwerty/erik-platform/clients/db"
 
 	"github.com/erikqwerty/auth/internal/model"
-	"github.com/erikqwerty/auth/pkg/db"
 )
 
 const (

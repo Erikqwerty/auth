@@ -18,6 +18,7 @@ import (
 
 func TestCreateUser(t *testing.T) {
 	t.Parallel()
+
 	type authServiceMockFunc func(mc *minimock.Controller) service.AuthService
 
 	type args struct {

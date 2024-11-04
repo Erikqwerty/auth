@@ -5,12 +5,12 @@ import (
 	"log"
 	"net"
 
+	"github.com/erikqwerty/erik-platform/closer"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 
 	"github.com/erikqwerty/auth/internal/config"
-	"github.com/erikqwerty/auth/pkg/closer"
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 )
 

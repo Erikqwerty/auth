@@ -5,12 +5,12 @@ import (
 	"errors"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/erikqwerty/erik-platform/clients/db"
 
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	"github.com/erikqwerty/auth/internal/repository/auth/convertor"
 	modelRepo "github.com/erikqwerty/auth/internal/repository/auth/model"
-	"github.com/erikqwerty/auth/pkg/db"
 )
 
 var _ repository.AuthRepository = (*repo)(nil)

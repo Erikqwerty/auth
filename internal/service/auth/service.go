@@ -3,13 +3,13 @@ package auth
 import (
 	"context"
 
+	"github.com/erikqwerty/erik-platform/clients/db"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/peer"
 
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	dev "github.com/erikqwerty/auth/internal/service"
-	"github.com/erikqwerty/auth/pkg/db"
 )
 
 var _ dev.AuthService = (*service)(nil)

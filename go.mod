@@ -1,11 +1,12 @@
 module github.com/erikqwerty/auth
 
-go 1.23
+go 1.23.2
 
 require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/brianvoe/gofakeit/v7 v7.1.1
+	github.com/erikqwerty/erik-platform v0.0.0-20241104082935-ab9f0df18946
 	github.com/georgysavva/scany v1.2.2
 	github.com/gojuno/minimock/v3 v3.4.1
 	github.com/gomodule/redigo v1.9.2
@@ -21,7 +22,6 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/gojuno/minimock v1.9.2 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

@@ -4,6 +4,10 @@ import (
 	"context"
 	"log"
 
+	"github.com/erikqwerty/erik-platform/clients/db"
+	"github.com/erikqwerty/erik-platform/clients/db/pg"
+	"github.com/erikqwerty/erik-platform/clients/db/transaction"
+	"github.com/erikqwerty/erik-platform/closer"
 	"github.com/gomodule/redigo/redis"
 
 	"github.com/erikqwerty/auth/internal/api"
@@ -16,10 +20,6 @@ import (
 	cacherepository "github.com/erikqwerty/auth/internal/repository/cache"
 	"github.com/erikqwerty/auth/internal/service"
 	authservice "github.com/erikqwerty/auth/internal/service/auth"
-	"github.com/erikqwerty/auth/pkg/closer"
-	"github.com/erikqwerty/auth/pkg/db"
-	"github.com/erikqwerty/auth/pkg/db/pg"
-	"github.com/erikqwerty/auth/pkg/db/transaction"
 )
 
 type serviceProvider struct {
