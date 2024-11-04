@@ -20,6 +20,7 @@ import (
 
 func TestUpdateUserInfo(t *testing.T) {
 	t.Parallel()
+
 	type authServiceMockFunc func(mc *minimock.Controller) service.AuthService
 
 	type args struct {
@@ -69,7 +70,9 @@ func TestUpdateUserInfo(t *testing.T) {
 			err:  nil,
 			authServiceMockFunc: func(mc *minimock.Controller) service.AuthService {
 				mock := serviceMock.NewAuthServiceMock(mc)
+
 				mock.UpdateUserMock.Expect(ctx, updateUser).Return(nil)
+
 				return mock
 			},
 		},
@@ -83,7 +86,9 @@ func TestUpdateUserInfo(t *testing.T) {
 			err:  tempErr,
 			authServiceMockFunc: func(mc *minimock.Controller) service.AuthService {
 				mock := serviceMock.NewAuthServiceMock(mc)
+
 				mock.UpdateUserMock.Expect(ctx, updateUser).Return(tempErr)
+
 				return mock
 			},
 		},
@@ -93,6 +98,7 @@ func TestUpdateUserInfo(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			authServiceMock := tt.authServiceMockFunc(mc)
 			api := api.NewImplementationServAuthUser(authServiceMock)
 

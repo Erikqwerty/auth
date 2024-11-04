@@ -69,6 +69,7 @@ func TestCreateUser(t *testing.T) {
 		err:  nil,
 		dbMockFunc: func(_ *minimock.Controller) db.TxManager {
 			mock := dbMock.NewTxManagerMock(t)
+
 			mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 				return handler(ctx)
 			})
@@ -77,11 +78,13 @@ func TestCreateUser(t *testing.T) {
 		},
 		authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 			mock := repoMock.NewAuthRepositoryMock(t)
+
 			mock.CreateUserMock.Expect(ctx, req).Return(id, nil)
 			mock.CreateLogMock.Expect(ctx, &model.Log{
 				ActionType:    "CREATE",
 				ActionDetails: "детальная информация отсутствует",
 			}).Return(nil)
+
 			return mock
 		},
 		userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
@@ -99,14 +102,18 @@ func TestCreateUser(t *testing.T) {
 			err:  repoErr,
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				mock := dbMock.NewTxManagerMock(mc)
+
 				mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 					return handler(ctx)
 				})
+
 				return mock
 			},
 			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
+
 				mock.CreateUserMock.Expect(ctx, req).Return(0, repoErr)
+
 				return mock
 			},
 			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
@@ -128,11 +135,9 @@ func TestCreateUser(t *testing.T) {
 			want: 0,
 			err:  autherrors.ErrInvalidEmail,
 			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
-				// Ожидается, что репозиторий не будет вызван из-за ошибки валидации
 				return repoMock.NewAuthRepositoryMock(t)
 			},
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
-				// Ожидается, что транзакция не будет начата из-за ошибки валидации
 				return dbMock.NewTxManagerMock(mc)
 			},
 			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
@@ -150,14 +155,14 @@ func TestCreateUser(t *testing.T) {
 			err:  errors.New("transaction failed"),
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				mock := dbMock.NewTxManagerMock(mc)
-				// симулируем сбой в транзакции
+
 				mock.ReadCommittedMock.Set(func(_ context.Context, _ db.Handler) error {
-					return errors.New("transaction failed") // возврат ошибки
+					return errors.New("transaction failed")
 				})
+
 				return mock
 			},
 			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
-				// Ожидается, что репозиторий не будет вызван из-за ошибки транзакции
 				return repoMock.NewAuthRepositoryMock(t)
 			},
 			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
@@ -175,18 +180,22 @@ func TestCreateUser(t *testing.T) {
 			err:  errors.New("log writing failed"),
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				mock := dbMock.NewTxManagerMock(mc)
+
 				mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 					return handler(ctx)
 				})
+
 				return mock
 			},
 			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
+
 				mock.CreateUserMock.Expect(ctx, req).Return(id, nil)
 				mock.CreateLogMock.Expect(ctx, &model.Log{
 					ActionType:    "CREATE",
 					ActionDetails: "детальная информация отсутствует",
 				}).Return(errors.New("log writing failed"))
+
 				return mock
 			},
 			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {

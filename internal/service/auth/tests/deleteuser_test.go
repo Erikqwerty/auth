@@ -54,18 +54,22 @@ func TestDeleteUser(t *testing.T) {
 			err: nil,
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				mock := dbMock.NewTxManagerMock(mc)
+
 				mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 					return handler(ctx)
 				})
+
 				return mock
 			},
 			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
+
 				mock.DeleteUserMock.Expect(ctx, req).Return(nil)
 				mock.CreateLogMock.Expect(ctx, &model.Log{
 					ActionType:    "DELETE",
 					ActionDetails: "детальная информация отсутствует",
 				}).Return(nil)
+
 				return mock
 			},
 			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
@@ -82,14 +86,18 @@ func TestDeleteUser(t *testing.T) {
 			err: repoErr,
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				mock := dbMock.NewTxManagerMock(mc)
+
 				mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 					return handler(ctx)
 				})
+
 				return mock
 			},
 			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
+
 				mock.DeleteUserMock.Expect(ctx, req).Return(repoErr)
+
 				return mock
 			},
 			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
@@ -103,6 +111,7 @@ func TestDeleteUser(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			authRepoMock := tt.authRepoMockFunc(mc)
 			txManagerMock := tt.dbMockFunc(mc)
 			cacheMock := tt.userCacheMockFunc(mc)

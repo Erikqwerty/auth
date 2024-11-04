@@ -72,7 +72,9 @@ func TestCreateUser(t *testing.T) {
 			err:  nil,
 			authServiceMockFunc: func(mc *minimock.Controller) service.AuthService {
 				mock := serviceMock.NewAuthServiceMock(mc)
+
 				mock.CreateUserMock.Expect(ctx, createUser).Return(id, nil)
+
 				return mock
 			},
 		},
@@ -86,7 +88,9 @@ func TestCreateUser(t *testing.T) {
 			err:  tempErr,
 			authServiceMockFunc: func(mc *minimock.Controller) service.AuthService {
 				mock := serviceMock.NewAuthServiceMock(mc)
+
 				mock.CreateUserMock.Expect(ctx, createUser).Return(0, tempErr)
+
 				return mock
 			},
 		},
@@ -96,6 +100,7 @@ func TestCreateUser(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			authServiceMock := tt.authServiceMockFunc(mc)
 			api := api.NewImplementationServAuthUser(authServiceMock)
 

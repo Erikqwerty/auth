@@ -17,6 +17,7 @@ import (
 
 func TestDeleteUser(t *testing.T) {
 	t.Parallel()
+
 	type authServiceMockFunc func(mc *minimock.Controller) service.AuthService
 
 	type args struct {
@@ -54,7 +55,9 @@ func TestDeleteUser(t *testing.T) {
 			want: nil,
 			authServiceMockFunc: func(mc *minimock.Controller) service.AuthService {
 				mock := serviceMock.NewAuthServiceMock(mc)
+
 				mock.DeleteUserMock.Expect(ctx, req.Id).Return(nil)
+
 				return mock
 			},
 		},
@@ -67,7 +70,9 @@ func TestDeleteUser(t *testing.T) {
 			want: tempErr,
 			authServiceMockFunc: func(mc *minimock.Controller) service.AuthService {
 				mock := serviceMock.NewAuthServiceMock(mc)
+
 				mock.DeleteUserMock.Expect(ctx, req.Id).Return(tempErr)
+
 				return mock
 			},
 		},
@@ -77,6 +82,7 @@ func TestDeleteUser(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			authServiceMock := tt.authServiceMockFunc(mc)
 			api := api.NewImplementationServAuthUser(authServiceMock)
 

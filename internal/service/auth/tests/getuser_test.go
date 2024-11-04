@@ -73,26 +73,30 @@ func TestGetUser(t *testing.T) {
 			err:  nil,
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				mock := dbMock.NewTxManagerMock(mc)
+
 				mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 					return handler(ctx)
 				})
+
 				return mock
 			},
 			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(mc)
+
 				mock.ReadUserMock.Expect(ctx, req).Return(expectedRes, nil)
 				mock.CreateLogMock.Expect(ctx, &model.Log{
 					ActionType:    "GET",
 					ActionDetails: "детальная информация отсутствует",
 				}).Return(nil)
+
 				return mock
 			},
 			userCacheMockFunc: func(mc *minimock.Controller) repository.UserCache {
 				mock := repoMock.NewUserCacheMock(mc)
-				// Симулируем отсутствие данных в кэше на первом вызове
+
 				mock.GetUserMock.Expect(ctx, req).Return(nil, errors.New("cache miss"))
-				// Ожидаем вызов SetUser после успешного получения данных
 				mock.SetUserMock.Expect(ctx, req, expectedRes).Return(nil)
+
 				return mock
 			},
 		},
@@ -113,14 +117,16 @@ func TestGetUser(t *testing.T) {
 			},
 			authRepoMockFunc: func(mc *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(mc)
-				// Симулируем ошибку при чтении из репозитория
+
 				mock.ReadUserMock.Expect(ctx, req).Return(nil, repoErr)
+
 				return mock
 			},
 			userCacheMockFunc: func(mc *minimock.Controller) repository.UserCache {
 				mock := repoMock.NewUserCacheMock(mc)
-				// Первоначально GetUser возвращает ошибку для запуска транзакции
+
 				mock.GetUserMock.Expect(ctx, req).Return(nil, errors.New("cache miss"))
+
 				return mock
 			},
 		},
@@ -137,6 +143,7 @@ func TestGetUser(t *testing.T) {
 			service := auth.NewService(authRepoMock, txManagerMock, cacheMock)
 
 			user, err := service.GetUser(tt.args.ctx, tt.args.req)
+
 			require.Equal(t, tt.err, err)
 			require.Equal(t, tt.want, user)
 		})

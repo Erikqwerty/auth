@@ -22,6 +22,7 @@ type TestRequest struct {
 
 func TestValidateRequest(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		req     interface{}
@@ -128,6 +129,7 @@ func TestValidateRequest(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			err := api.ValidateRequest(tt.req)
 			if tt.wantErr != nil {
 				require.Error(t, err)

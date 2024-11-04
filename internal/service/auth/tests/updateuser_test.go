@@ -65,18 +65,22 @@ func TestUpdateUser(t *testing.T) {
 		err: nil,
 		dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 			mock := dbMock.NewTxManagerMock(mc)
+
 			mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 				return handler(ctx)
 			})
+
 			return mock
 		},
 		authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 			mock := repoMock.NewAuthRepositoryMock(t)
+
 			mock.UpdateUserMock.Expect(ctx, user).Return(nil)
 			mock.CreateLogMock.Expect(ctx, &model.Log{
 				ActionType:    "UPDATE",
 				ActionDetails: "детальная информация отсутствует",
 			}).Return(nil)
+
 			return mock
 		},
 		userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
@@ -94,14 +98,18 @@ func TestUpdateUser(t *testing.T) {
 			err: repoErr,
 			dbMockFunc: func(mc *minimock.Controller) db.TxManager {
 				mock := dbMock.NewTxManagerMock(mc)
+
 				mock.ReadCommittedMock.Set(func(ctx context.Context, handler db.Handler) error {
 					return handler(ctx)
 				})
+
 				return mock
 			},
 			authRepoMockFunc: func(_ *minimock.Controller) repository.AuthRepository {
 				mock := repoMock.NewAuthRepositoryMock(t)
+
 				mock.UpdateUserMock.Expect(ctx, user).Return(repoErr)
+
 				return mock
 			},
 			userCacheMockFunc: func(_ *minimock.Controller) repository.UserCache {
@@ -115,12 +123,15 @@ func TestUpdateUser(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			authRepoMock := tt.authRepoMockFunc(mc)
 			txManagerMock := tt.dbMockFunc(mc)
 			cacheMock := tt.userCacheMockFunc(mc)
 
 			servic := auth.NewService(authRepoMock, txManagerMock, cacheMock)
+
 			err := servic.UpdateUser(ctx, user)
+
 			require.Equal(t, tt.err, err)
 		})
 	}
