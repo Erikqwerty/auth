@@ -18,6 +18,11 @@ type PGConfig interface {
 	DSN() string // DSN возвращает строку подключения к PostgreSQL
 }
 
+// HTTPConfig - интерфейс для конфигурации http gatawey
+type HTTPConfig interface {
+	Address() string
+}
+
 // RedisConfig - определяет методы конфигурации redis
 type RedisConfig interface {
 	Address() string
