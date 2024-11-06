@@ -4,8 +4,9 @@ import (
 	"errors"
 	"reflect"
 
+	"github.com/erikqwerty/auth/internal/autherrors"
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
-	"github.com/erikqwerty/auth/pkg/utils/validator"
+	"github.com/erikqwerty/auth/pkg/utils"
 )
 
 // валидируемые данные поля структур запроса gRPC контракта
@@ -15,24 +16,11 @@ const (
 	password        = "Password"
 	passwordConfirm = "PasswordConfirm"
 	role            = "Role"
-	id              = "Id"
+	id              = "ID"
 )
 
-// Ошибки для валидации
-var (
-	ErrEmailNotSpecified           = errors.New("не указан email")
-	ErrNameNotSpecified            = errors.New("имя пользователя указано пустым")
-	ErrPasswordNotSpecified        = errors.New("не указан пароль")
-	ErrPasswordConfirmNotSpecified = errors.New("не указан пароль подтверждения")
-	ErrPasswordsDoNotMatch         = errors.New("пароли не совпадают")
-	ErrRoleNotSpecified            = errors.New("роль пользователя не была указана")
-	ErrInvalidRole                 = errors.New("переданная роль пользователя не существует")
-	ErrInvalidEmail                = errors.New("email не валиден")
-	ErrInvalidID                   = errors.New("id удаляемого пользователя не может быть равен 0")
-)
-
-// validateRequest - использовать для проверки получаемых запросов на ожидаемые данные
-func validateRequest(req interface{}) error {
+// ValidateRequest - использовать для проверки получаемых запросов на ожидаемые данные
+func ValidateRequest(req interface{}) error {
 	v := reflect.ValueOf(req)
 
 	// Проверка на указатель и получение значения
@@ -45,47 +33,66 @@ func validateRequest(req interface{}) error {
 		return errors.New("ожидалась структура для валидации")
 	}
 
-	// Итерация по полям структуры
+	// Рекурсивная проверка структуры на ожидаемые поля
+	return validateStructFields(v)
+}
+
+// validateStructFields - рекурсивная функция для проверки полей структуры на наличие ожидаемых данных
+func validateStructFields(v reflect.Value) error {
+	var passwordValue, passwordConfirmValue string
+
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
 		fieldName := v.Type().Field(i).Name
 
+		// Проверка на вложенные структуры и рекурсивный вызов
+		if field.Kind() == reflect.Struct {
+			if err := validateStructFields(field); err != nil {
+				return err
+			}
+			continue
+		}
+
+		// Проверка полей структуры на ожидаемые значения
 		switch fieldName {
 		case email:
 			if field.String() == "" {
-				return ErrEmailNotSpecified
+				return autherrors.ErrEmailNotSpecified
 			}
-			if !validator.IsValidEmail(field.String()) {
-				return ErrInvalidEmail
+			if !utils.IsValidEmail(field.String()) {
+				return autherrors.ErrInvalidEmail
 			}
 		case name:
 			if field.String() == "" {
-				return ErrNameNotSpecified
+				return autherrors.ErrNameNotSpecified
 			}
 		case password:
 			if field.String() == "" {
-				return ErrPasswordNotSpecified
+				return autherrors.ErrPasswordNotSpecified
 			}
+			passwordValue = field.String()
 		case passwordConfirm:
 			if field.String() == "" {
-				return ErrPasswordConfirmNotSpecified
+				return autherrors.ErrPasswordConfirmNotSpecified
 			}
+			passwordConfirmValue = field.String()
 		case role:
 			roleID := field.Int()
-
 			if roleID == int64(desc.Role_ROLE_UNSPECIFIED) {
-				return ErrRoleNotSpecified
-			} else if roleID != int64(desc.Role_ROLE_UNSPECIFIED) &&
-				roleID != int64(desc.Role_ROLE_USER) &&
-				roleID != int64(desc.Role_ROLE_ADMIN) {
-
-				return ErrInvalidRole
+				return autherrors.ErrRoleNotSpecified
+			} else if roleID != int64(desc.Role_ROLE_USER) && roleID != int64(desc.Role_ROLE_ADMIN) {
+				return autherrors.ErrInvalidRole
 			}
 		case id:
 			if field.Int() == 0 {
-				return ErrInvalidID
+				return autherrors.ErrInvalidID
 			}
 		}
 	}
+
+	if passwordValue != "" && passwordConfirmValue != "" && passwordValue != passwordConfirmValue {
+		return autherrors.ErrPasswordsDoNotMatch
+	}
+
 	return nil
 }

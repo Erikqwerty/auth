@@ -4,25 +4,36 @@ import (
 	"context"
 	"log"
 
+	"github.com/erikqwerty/erik-platform/clients/db"
+	"github.com/erikqwerty/erik-platform/clients/db/pg"
+	"github.com/erikqwerty/erik-platform/clients/db/transaction"
+	"github.com/erikqwerty/erik-platform/closer"
+	"github.com/gomodule/redigo/redis"
+
 	"github.com/erikqwerty/auth/internal/api"
-	"github.com/erikqwerty/auth/internal/client/db"
-	"github.com/erikqwerty/auth/internal/client/db/pg"
-	"github.com/erikqwerty/auth/internal/client/db/transaction"
-	"github.com/erikqwerty/auth/internal/closer"
+	"github.com/erikqwerty/auth/internal/client/cache"
+	redisCL "github.com/erikqwerty/auth/internal/client/cache/redis"
 	"github.com/erikqwerty/auth/internal/config"
+	"github.com/erikqwerty/auth/internal/config/env"
 	"github.com/erikqwerty/auth/internal/repository"
 	authrepository "github.com/erikqwerty/auth/internal/repository/auth"
+	cacherepository "github.com/erikqwerty/auth/internal/repository/cache"
 	"github.com/erikqwerty/auth/internal/service"
 	authservice "github.com/erikqwerty/auth/internal/service/auth"
 )
 
 type serviceProvider struct {
-	pgConfig   config.PGConfig
-	grpcConfig config.GRPCConfig
+	pgConfig    config.PGConfig
+	grpcConfig  config.GRPCConfig
+	redisConfig config.RedisConfig
 
 	dbClient       db.Client
 	txManager      db.TxManager
 	authRepository repository.AuthRepository
+	userCache      repository.UserCache
+
+	redisPool   *redis.Pool
+	redisClient cache.RedisClient
 
 	authService service.AuthService
 
@@ -36,7 +47,7 @@ func newServiceProvider() *serviceProvider {
 // PGConfig - инициализирует конфигурацию базы данных
 func (s *serviceProvider) PGConfig() config.PGConfig {
 	if s.pgConfig == nil {
-		cfg, err := config.NewPGConfig()
+		cfg, err := env.NewPGConfig()
 		if err != nil {
 			log.Fatalf("ошибка загрущки конфигурации базы данных: %s", err.Error())
 		}
@@ -50,7 +61,7 @@ func (s *serviceProvider) PGConfig() config.PGConfig {
 // GRPCConfig - инициализирует конфигурацию gRPC сервера
 func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	if s.grpcConfig == nil {
-		cfg, err := config.NewGRPCConfig()
+		cfg, err := env.NewGRPCConfig()
 		if err != nil {
 			log.Fatalf("ошибка загрузки конфигурации gRPC сервера: %s", err.Error())
 		}
@@ -59,6 +70,19 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	}
 
 	return s.grpcConfig
+}
+
+func (s *serviceProvider) RedisConfig() config.RedisConfig {
+	if s.redisConfig == nil {
+		cfg, err := env.NewRedisConfig()
+		if err != nil {
+			log.Fatalf("ошибка загрузки конфигурации redis: %s", err.Error())
+		}
+
+		s.redisConfig = cfg
+	}
+
+	return s.redisConfig
 }
 
 // DBClient - создает клиента для подключения к базе данных
@@ -100,10 +124,39 @@ func (s *serviceProvider) AuthRepository(ctx context.Context) repository.AuthRep
 	return s.authRepository
 }
 
+func (s *serviceProvider) RedisPool() *redis.Pool {
+	if s.redisPool == nil {
+		s.redisPool = &redis.Pool{
+			MaxIdle:     s.RedisConfig().MaxIdle(),
+			IdleTimeout: s.RedisConfig().IdleTimeout(),
+			DialContext: func(ctx context.Context) (redis.Conn, error) {
+				return redis.DialContext(ctx, "tcp", s.RedisConfig().Address())
+			},
+		}
+	}
+
+	return s.redisPool
+}
+
+func (s *serviceProvider) RedisClient() cache.RedisClient {
+	if s.redisClient == nil {
+		s.redisClient = redisCL.NewClient(s.RedisPool(), s.RedisConfig())
+	}
+
+	return s.redisClient
+}
+
+func (s *serviceProvider) UserCache() repository.UserCache {
+	if s.userCache == nil {
+		s.userCache = cacherepository.NewCache(s.RedisClient())
+	}
+	return s.userCache
+}
+
 // AuthService - инициализирует сервисный слой сервиса auth
 func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 	if s.authService == nil {
-		s.authService = authservice.NewService(s.AuthRepository(ctx), s.TxManager(ctx))
+		s.authService = authservice.NewService(s.AuthRepository(ctx), s.TxManager(ctx), s.UserCache())
 	}
 
 	return s.authService

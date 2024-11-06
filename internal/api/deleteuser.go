@@ -10,7 +10,7 @@ import (
 
 // DeleteUser - обрабатывает получаемый запрос от клиента gRPC на удаление пользователя
 func (i *ImplServAuthUser) DeleteUser(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
-	if err := validateRequest(req); err != nil {
+	if err := ValidateRequest(req); err != nil {
 		return nil, err
 	}
 
@@ -19,5 +19,5 @@ func (i *ImplServAuthUser) DeleteUser(ctx context.Context, req *desc.DeleteReque
 		return nil, err
 	}
 
-	return nil, nil
+	return &emptypb.Empty{}, nil
 }

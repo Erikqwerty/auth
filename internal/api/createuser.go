@@ -9,7 +9,7 @@ import (
 
 // CreateUser - обрабатывает получаемый запрос от клиента gRPC на создание пользователя
 func (i *ImplServAuthUser) CreateUser(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
-	if err := validateRequest(req); err != nil {
+	if err := ValidateRequest(req); err != nil {
 		return nil, err
 	}
 

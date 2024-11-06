@@ -3,11 +3,20 @@ package auth
 import (
 	"context"
 
+	"github.com/erikqwerty/auth/internal/autherrors"
 	"github.com/erikqwerty/auth/internal/model"
 )
 
 // Create - создание пользователя
 func (s *service) CreateUser(ctx context.Context, user *model.CreateUser) (int64, error) {
+	if user == nil {
+		return 0, autherrors.ErrCreateUserNil
+	}
+
+	if err := user.Validate(); err != nil {
+		return 0, err
+	}
+
 	if err := prepareUserForCreate(user); err != nil {
 		return 0, err
 	}
@@ -22,7 +31,11 @@ func (s *service) CreateUser(ctx context.Context, user *model.CreateUser) (int64
 			return errTx
 		}
 
-		if errTx := s.writeLog(ctx, actionTypeCreate); errTx != nil {
+		errTx = s.authRepository.CreateLog(ctx, &model.Log{
+			ActionType:    actionTypeCreate,
+			ActionDetails: details(ctx),
+		})
+		if errTx != nil {
 			return errTx
 		}
 

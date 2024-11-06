@@ -1,9 +1,11 @@
-package config
+package env
 
 import (
 	"errors"
 	"net"
 	"os"
+
+	"github.com/erikqwerty/auth/internal/config"
 )
 
 // Имена переменных окружения для GRPC-конфигурации
@@ -11,13 +13,6 @@ const (
 	grpcHostEnvName = "GRPC_HOST"
 	grpcPortEnvName = "GRPC_PORT"
 )
-
-// GRPCConfig - интерфейс, представляющий конфигурацию для GRPC-сервера.
-// Интерфейс определяет метод Address, который возвращает адрес GRPC-сервера
-// в формате "host:port".
-type GRPCConfig interface {
-	Address() string
-}
 
 // grpcConfig - структура, реализующая интерфейс GRPCConfig.
 type grpcConfig struct {
@@ -28,7 +23,7 @@ type grpcConfig struct {
 // NewGRPCConfig - функция для создания новой конфигурации GRPC-сервера.
 // Читает хост и порт из переменных окружения GRPC_HOST и GRPC_PORT.
 // Возвращает ошибку, если одна из переменных не найдена.
-func NewGRPCConfig() (GRPCConfig, error) {
+func NewGRPCConfig() (config.GRPCConfig, error) {
 	host := os.Getenv(grpcHostEnvName)
 	if len(host) == 0 {
 		return nil, errors.New("grpc host not found")

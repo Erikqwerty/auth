@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/erikqwerty/erik-platform/clients/db"
 
-	"github.com/erikqwerty/auth/internal/client/db"
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	"github.com/erikqwerty/auth/internal/repository/auth/convertor"

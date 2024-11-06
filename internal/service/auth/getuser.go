@@ -8,22 +8,36 @@ import (
 
 // GetUser - получение информации о пользователе
 func (s *service) GetUser(ctx context.Context, email string) (*model.UserInfo, error) {
-	user := &model.UserInfo{}
 
-	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
-		var errTX error
+	user, err := s.userCache.GetUser(ctx, email)
+	if err == nil {
+		return user, nil
+	}
 
-		user, errTX = s.authRepository.ReadUser(ctx, email)
-		if errTX != nil {
-			return errTX
+	err = s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
+		var errTx error
+
+		user, errTx = s.authRepository.ReadUser(ctx, email)
+		if errTx != nil {
+			return errTx
 		}
 
-		if errTx := s.writeLog(ctx, actionTypeGet); errTx != nil {
+		errTx = s.authRepository.CreateLog(ctx, &model.Log{
+			ActionType:    actionTypeGet,
+			ActionDetails: details(ctx),
+		})
+		if errTx != nil {
 			return errTx
 		}
 
 		return nil
 	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.userCache.SetUser(ctx, email, user)
 
 	return user, err
 }

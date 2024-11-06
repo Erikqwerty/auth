@@ -2,12 +2,11 @@ package auth
 
 import (
 	"context"
-	"time"
 
+	"github.com/erikqwerty/erik-platform/clients/db"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/peer"
 
-	"github.com/erikqwerty/auth/internal/client/db"
 	"github.com/erikqwerty/auth/internal/model"
 	"github.com/erikqwerty/auth/internal/repository"
 	dev "github.com/erikqwerty/auth/internal/service"
@@ -24,18 +23,24 @@ const (
 
 type service struct {
 	authRepository repository.AuthRepository
+	userCache      repository.UserCache
 	txManager      db.TxManager
 }
 
 // NewService - создает экземляр сервиса
-func NewService(authRepository repository.AuthRepository, txManager db.TxManager) dev.AuthService {
+func NewService(
+	authRepository repository.AuthRepository,
+	txManager db.TxManager,
+	userCache repository.UserCache) dev.AuthService {
+
 	return &service{
 		authRepository: authRepository,
+		userCache:      userCache,
 		txManager:      txManager,
 	}
 }
 
-// prepareUserForCreate - добавляем в model.User хеш пароля и задаем время создания и обновления пользователя
+// prepareUserForCreate - добавляем в model.User хеш пароля
 func prepareUserForCreate(user *model.CreateUser) error {
 	passHash, err := hashPassword(user.PasswordHash)
 	if err != nil {
@@ -43,14 +48,8 @@ func prepareUserForCreate(user *model.CreateUser) error {
 	}
 
 	user.PasswordHash = passHash
-	user.CreatedAt = timeNowUTC3()
 
 	return nil
-}
-
-// timeNowUTC3 + возвращает время +3
-func timeNowUTC3() time.Time {
-	return time.Now().In(time.FixedZone("UTC+3", 3*60*60))
 }
 
 // hashPassword - создает хеш из пароля
@@ -68,7 +67,11 @@ func details(ctx context.Context) string {
 	info := "Адрес:"
 
 	peer, _ := peer.FromContext(ctx)
-	info += peer.Addr.String()
+	if peer != nil {
+		info += peer.Addr.String()
+	} else {
+		info = "детальная информация отсутствует"
+	}
 
 	return info
 }
