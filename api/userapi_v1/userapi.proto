@@ -15,32 +15,32 @@ option go_package = "github.com/erikqwerty/auth/pkg/userapi_v1;userapi_v1";
 service UserAPIV1 {
   // Метод для создания нового пользователя
   rpc CreateUser(CreateRequest) returns (CreateResponse) {
-      option (google.api.http) = {
-          post: "/auth/v1/create"
-          body: "*"
-      };
+    option (google.api.http) = {
+      post: "/auth/v1/create"
+      body: "*"
+    };
   }
 
   // Метод для получения данных пользователя
   rpc GetUserInfo(GetRequest) returns (GetResponse) {
-      option (google.api.http) = {
-          get: "/auth/v1"
-      };
+    option (google.api.http) = {
+      get: "/auth/v1"
+    };
   }
 
   // Метод для обновления данных пользователя
   rpc UpdateUserInfo(UpdateRequest) returns (google.protobuf.Empty) {
-      option (google.api.http) = {
-          put: "/auth/v1"
-          body: "*"
-      };
+    option (google.api.http) = {
+      put: "/auth/v1"
+      body: "*"
+    };
   }
 
   // Метод для удаления пользователя
   rpc DeleteUser(DeleteRequest) returns (google.protobuf.Empty) {
-      option (google.api.http) = {
-          delete: "/auth/v1"
-      };
+    option (google.api.http) = {
+      delete: "/auth/v1"
+    };
   }
 }
 
