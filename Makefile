@@ -37,6 +37,8 @@ generate-user-api:
 	       --plugin=protoc-gen-go=bin/protoc-gen-go \
 	       --go-grpc_out=pkg/userapi_v1 --go-grpc_opt=paths=source_relative \
 	       --plugin=protoc-gen-go-grpc=bin/protoc-gen-go-grpc \
+		   --validate_out lang=go:pkg/userapi_v1 --validate_opt=paths=source_relative \
+	       --plugin=protoc-gen-validate=bin/protoc-gen-validate \
 	       --grpc-gateway_out=pkg/userapi_v1 --grpc-gateway_opt=paths=source_relative \
 	       --plugin=protoc-gen-grpc-gateway=bin/protoc-gen-grpc-gateway \
 	       api/userapi_v1/userapi.proto
