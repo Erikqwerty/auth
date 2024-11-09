@@ -1,3 +1,0 @@
-apis:
-  pkg/swagger/api.swagger.json:
-    alias: note-api
