@@ -5,10 +5,30 @@ package userapi_v1;
 import "google/api/annotations.proto";  
 import "google/protobuf/empty.proto";       
 import "google/protobuf/timestamp.proto";  
-import "google/protobuf/wrappers.proto"; 
+import "google/protobuf/wrappers.proto";
+import "protoc-gen-openapiv2/options/annotations.proto"; 
 import "validate/validate.proto";
 
+
 option go_package = "github.com/erikqwerty/auth/pkg/userapi_v1;userapi_v1";  
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Note API"
+    version: "1.0.0"
+    contact: {
+      name: "Erik Kocharuan"
+      email: "erik@mail.ru"
+    };
+  };
+
+  host: "localhost:8888",
+  schemes: HTTP,
+  schemes: HTTPS,
+  consumes: "application/json",
+  produces: "application/json",
+};
+
 
 // Определение сервиса UserAPIV1, который содержит 
 // основные RPC методы для управления пользователями
@@ -31,7 +51,7 @@ service UserAPIV1 {
   // Метод для обновления данных пользователя
   rpc UpdateUserInfo(UpdateRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/auth/v1"
+      patch: "/auth/v1"
       body: "*"
     };
   }

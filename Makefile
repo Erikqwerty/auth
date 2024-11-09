@@ -41,6 +41,8 @@ generate-user-api:
 	       --plugin=protoc-gen-validate=bin/protoc-gen-validate \
 	       --grpc-gateway_out=pkg/userapi_v1 --grpc-gateway_opt=paths=source_relative \
 	       --plugin=protoc-gen-grpc-gateway=bin/protoc-gen-grpc-gateway \
+		   --openapiv2_out=allow_merge=true,merge_file_name=api:pkg/swagger \
+    	   --plugin=protoc-gen-openapiv2=bin/protoc-gen-openapiv2 \
 	       api/userapi_v1/userapi.proto
 
 vendor-proto:
