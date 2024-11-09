@@ -19,6 +19,7 @@ type httpConfig struct {
 	port string
 }
 
+// NewHTTPConfig возвращает конфигурацию HTTP-сервера.
 func NewHTTPConfig() (config.HTTPConfig, error) {
 	host := os.Getenv(httpHostEnvName)
 	if len(host) == 0 {
