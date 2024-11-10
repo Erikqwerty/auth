@@ -1,0 +1,287 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Note API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Erik Kocharuan",
+      "email": "erik@mail.ru"
+    }
+  },
+  "tags": [
+    {
+      "name": "UserAPIV1"
+    }
+  ],
+  "host": "38.242.238.94:58888",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auth/v1": {
+      "get": {
+        "summary": "Метод для получения данных пользователя",
+        "operationId": "UserAPIV1_GetUserInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userapi_v1GetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "description": "email пользователя, данные которого нужно получить",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UserAPIV1"
+        ]
+      },
+      "delete": {
+        "summary": "Метод для удаления пользователя",
+        "operationId": "UserAPIV1_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Идентификатор пользователя, которого нужно удалить",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "UserAPIV1"
+        ]
+      },
+      "patch": {
+        "summary": "Метод для обновления данных пользователя",
+        "operationId": "UserAPIV1_UpdateUserInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userapi_v1UpdateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserAPIV1"
+        ]
+      }
+    },
+    "/auth/v1/create": {
+      "post": {
+        "summary": "Метод для создания нового пользователя",
+        "operationId": "UserAPIV1_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userapi_v1CreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userapi_v1CreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserAPIV1"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "userapi_v1CreateRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Имя пользователя"
+        },
+        "email": {
+          "type": "string",
+          "title": "Email пользователя (уникальный для аутентификации)"
+        },
+        "password": {
+          "type": "string",
+          "title": "Пароль пользователя"
+        },
+        "passwordConfirm": {
+          "type": "string",
+          "title": "Подтверждение пароля"
+        },
+        "role": {
+          "$ref": "#/definitions/userapi_v1Role",
+          "title": "Роль пользователя (USER или ADMIN)"
+        }
+      },
+      "title": "Сообщение запроса для метода Create (создание пользователя)"
+    },
+    "userapi_v1CreateResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "title": "Уникальный идентификатор созданного пользователя"
+        }
+      },
+      "title": "Сообщение ответа для метода Create (создание пользователя)"
+    },
+    "userapi_v1GetResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64",
+          "title": "Уникальный идентификатор пользователя"
+        },
+        "name": {
+          "type": "string",
+          "title": "Имя пользователя"
+        },
+        "email": {
+          "type": "string",
+          "title": "Email пользователя"
+        },
+        "role": {
+          "$ref": "#/definitions/userapi_v1Role",
+          "title": "Роль пользователя (USER или ADMIN)"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Дата и время создания пользователя"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Дата и время последнего обновления пользователя"
+        }
+      },
+      "title": "Сообщение ответа для метода Get (получение данных пользователя)"
+    },
+    "userapi_v1Role": {
+      "type": "string",
+      "enum": [
+        "ROLE_UNSPECIFIED",
+        "ROLE_USER",
+        "ROLE_ADMIN"
+      ],
+      "default": "ROLE_UNSPECIFIED",
+      "description": "- ROLE_UNSPECIFIED: Не указана (по умолчанию)\n - ROLE_USER: Обычный пользователь\n - ROLE_ADMIN: Администратор",
+      "title": "Role - перечисление ролей пользователя"
+    },
+    "userapi_v1UpdateRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "title": "Идентификатор пользователя, данные которого нужно обновить"
+        },
+        "name": {
+          "type": "string",
+          "title": "Имя пользователя (обновляется при необходимости)"
+        },
+        "role": {
+          "$ref": "#/definitions/userapi_v1Role",
+          "title": "Роль пользователя (USER или ADMIN)"
+        }
+      },
+      "title": "Сообщение запроса для метода Update (обновление данных пользователя)"
+    }
+  }
+}
