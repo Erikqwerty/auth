@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, dev-task-5]
   pull_request:
     branches: [main, master]
 
@@ -63,14 +63,33 @@ jobs:
 
       - name: Create .env file for CI
         run: |
+
+          # Postgress
           echo "PG_DATABASE_NAME=auth" >> .env
           echo "PG_USER=${{ secrets.PG_USER }}" >> .env
           echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
           echo "PG_PORT=5432" >> .env
           echo "MIGRATION_DIR=./migrations" >> .env
+          echo "PG_DSN=host=$DB_CONTAINER_NAME port=5432 dbname=auth user=${{secrets.PG_USER}} password=${{secrets.PG_PASSWORD}} sslmode=disable" >> .env
+
+          # GRPC server
           echo "GRPC_HOST=0.0.0.0" >> .env
           echo "GRPC_PORT=50052" >> .env
-          echo "PG_DSN=host=$DB_CONTAINER_NAME port=5432 dbname=auth user=${{secrets.PG_USER}} password=${{secrets.PG_PASSWORD}} sslmode=disable" >> .env
+          
+          # Redis
+          echo "REDIS_HOST=0.0.0.0" >> .env
+          echo "REDIS_PORT=6379" >> .env
+          echo "REDIS_CONNECTION_TIMEOUT_SEC=5" >> .env
+          echo "REDIS_MAX_IDLE=10" >> .env
+          echo "REDIS_IDLE_TIMEOUT_SEC=300" >> .env
+
+          # http server
+          echo "HTTP_HOST=0.0.0.0" >> .env
+          echo "HTTP_PORT=8888" >> .env
+          
+          # swagger server
+          echo "SWAGGER_HOST=0.0.0.0" >> .env
+          echo "SWAGGER_PORT=8880" >> .env
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -116,7 +135,7 @@ jobs:
             docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
             docker stop $CONTAINER_NAME || true
             docker rm $CONTAINER_NAME || true
-            docker run -d -p 50052:50052 --network auth-service-network --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
+            docker run -d -p 50052:50052 -p 58888:8888 -p 58880:8880 --network auth-service-network --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
 
       - name: Ensure Database Container
         uses: appleboy/ssh-action@v1.0.0
