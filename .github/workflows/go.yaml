@@ -15,7 +15,7 @@ env:
   DB_REDIS_CONTAINER_NAME: "auth-cache-redis"
 
 jobs:
-  # Go Job - выполняет билд, тесты и линтинг кода
+  # Go Job - выполняет билд, тесты и линтинг кода.
   build-and-test:
     runs-on: ubuntu-latest
     steps:
