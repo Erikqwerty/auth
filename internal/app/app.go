@@ -20,7 +20,7 @@ import (
 	"github.com/erikqwerty/auth/internal/config"
 	"github.com/erikqwerty/auth/internal/interceptor"
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
-	_ "github.com/erikqwerty/auth/statik"
+	_ "github.com/erikqwerty/auth/statik" // Импортируем пакет statik для инициализации виртуальной файловой системы
 )
 
 // App - Структура приложения, содержащая сервисы и gRPC сервер
@@ -169,8 +169,9 @@ func (a *App) initSwaggerServer(_ context.Context) error {
 	mux.HandleFunc("/api.swagger.json", serveSwaggerFile("/api.swagger.json"))
 
 	a.swaggerServer = &http.Server{
-		Addr:    a.serviceProvider.SwaggerConfig().Address(),
-		Handler: mux,
+		Addr:              a.serviceProvider.SwaggerConfig().Address(),
+		Handler:           mux,
+		ReadHeaderTimeout: 10 * time.Second,
 	}
 
 	return nil
@@ -215,7 +216,7 @@ func (a *App) runSwaggerServer() error {
 }
 
 func serveSwaggerFile(path string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, _ *http.Request) {
 		log.Printf("Serving swagger file: %s", path)
 
 		statikFs, err := fs.New()
@@ -231,7 +232,12 @@ func serveSwaggerFile(path string) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		defer file.Close()
+		defer func() {
+			if err := file.Close(); err != nil {
+				// http.Error(w, err.Error(), http.StatusInternalServerError) так сделать?
+				return
+			}
+		}()
 
 		log.Printf("Read swagger file: %s", path)
 

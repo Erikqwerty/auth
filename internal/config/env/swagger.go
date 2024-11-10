@@ -19,6 +19,7 @@ type swaggerConfig struct {
 	port string
 }
 
+// NewSwaggerConfig - создает конфигурацию swagger читая переменную среды
 func NewSwaggerConfig() (config.SwaggerConfig, error) {
 	host := os.Getenv(swaggerHostEnvName)
 	if len(host) == 0 {

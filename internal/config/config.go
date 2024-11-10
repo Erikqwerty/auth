@@ -23,6 +23,7 @@ type HTTPConfig interface {
 	Address() string
 }
 
+// SwaggerConfig - интерфейс для конфигурации swagger server
 type SwaggerConfig interface {
 	Address() string
 }
