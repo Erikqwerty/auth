@@ -95,7 +95,7 @@ func TestCreateUser(t *testing.T) {
 			mock := repoMock.NewUserCacheMock(t)
 			return mock
 		},
-		kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+		kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 			mock := kafkaMock.NewProducerMock(t)
 			mock.SendMessageMock.Expect("CREATEUSER", req.Email).Return(0, 0, nil)
 			return mock
@@ -129,7 +129,7 @@ func TestCreateUser(t *testing.T) {
 				mock := repoMock.NewUserCacheMock(t)
 				return mock
 			},
-			kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 				return kafkaMock.NewProducerMock(t)
 			},
 		},
@@ -156,7 +156,7 @@ func TestCreateUser(t *testing.T) {
 				mock := repoMock.NewUserCacheMock(t)
 				return mock
 			},
-			kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 				return kafkaMock.NewProducerMock(t)
 			},
 		},
@@ -184,7 +184,7 @@ func TestCreateUser(t *testing.T) {
 				mock := repoMock.NewUserCacheMock(t)
 				return mock
 			},
-			kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 				return kafkaMock.NewProducerMock(t)
 			},
 		},
@@ -220,7 +220,7 @@ func TestCreateUser(t *testing.T) {
 				mock := repoMock.NewUserCacheMock(t)
 				return mock
 			},
-			kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 				return kafkaMock.NewProducerMock(t)
 			},
 		},
@@ -242,7 +242,7 @@ func TestCreateUser(t *testing.T) {
 				mock := repoMock.NewUserCacheMock(t)
 				return mock
 			},
-			kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 				return kafkaMock.NewProducerMock(t)
 			},
 		},

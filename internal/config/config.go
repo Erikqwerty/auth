@@ -36,6 +36,7 @@ type RedisConfig interface {
 	IdleTimeout() time.Duration
 }
 
+// KafkaProducerConfig - определяет методы конфигурации kafka Producer
 type KafkaProducerConfig interface {
 	Brockers() []string
 }

@@ -103,7 +103,7 @@ func TestGetUser(t *testing.T) {
 
 				return mock
 			},
-			kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 				return kafkaMock.NewProducerMock(t)
 			},
 		},
@@ -136,7 +136,7 @@ func TestGetUser(t *testing.T) {
 
 				return mock
 			},
-			kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 				return kafkaMock.NewProducerMock(t)
 			},
 		},

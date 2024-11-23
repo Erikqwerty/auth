@@ -16,6 +16,7 @@ type producerConfig struct {
 	brockers []string
 }
 
+// NewProducerConfig - загружает конфигурацию для kafka из env
 func NewProducerConfig() (config.KafkaProducerConfig, error) {
 	bstr := os.Getenv(brockers)
 	brokers := strings.Split(bstr, ",")

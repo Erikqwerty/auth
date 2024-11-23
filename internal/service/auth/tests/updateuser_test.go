@@ -91,7 +91,7 @@ func TestUpdateUser(t *testing.T) {
 			mock := repoMock.NewUserCacheMock(t)
 			return mock
 		},
-		kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+		kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 			return kafkaMock.NewProducerMock(t)
 		},
 	},
@@ -123,7 +123,7 @@ func TestUpdateUser(t *testing.T) {
 				mock := repoMock.NewUserCacheMock(t)
 				return mock
 			},
-			kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
 				return kafkaMock.NewProducerMock(t)
 			},
 		},
