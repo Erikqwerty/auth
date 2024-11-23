@@ -96,7 +96,9 @@ func TestCreateUser(t *testing.T) {
 			return mock
 		},
 		kafkaProducerMockFunc: func(mc *minimock.Controller) kafka.Producer {
-			return kafkaMock.NewProducerMock(t)
+			mock := kafkaMock.NewProducerMock(t)
+			mock.SendMessageMock.Expect("CREATEUSER", req.Email).Return(0, 0, nil)
+			return mock
 		},
 	},
 		{
