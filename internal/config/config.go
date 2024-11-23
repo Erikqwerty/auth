@@ -36,6 +36,10 @@ type RedisConfig interface {
 	IdleTimeout() time.Duration
 }
 
+type KafkaProducerConfig interface {
+	Brockers() []string
+}
+
 // Load - Парсит файл и загружает переменные среды по указному пути
 func Load(path string) error {
 	err := godotenv.Load(path)

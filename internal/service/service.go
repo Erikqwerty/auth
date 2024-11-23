@@ -6,14 +6,18 @@ import (
 	"github.com/erikqwerty/auth/internal/model"
 )
 
-// AuthService - интерфейс сервисного слоя
+// AuthService - интерфейс для управления пользователями.
+// Обеспечивает функционал создания, получения, обновления и удаления пользователей.
 type AuthService interface {
-	// CreateUser - создание пользователя
+	// CreateUser - регистрирует нового пользователя в системе.
 	CreateUser(ctx context.Context, user *model.CreateUser) (int64, error)
-	// GetUser - получение информации о пользователе
+
+	// GetUser - возвращает информацию о пользователе по email.
 	GetUser(ctx context.Context, email string) (*model.UserInfo, error)
-	// UpdateUser - обновить информацию о пользователе
+
+	// UpdateUser - обновляет данные существующего пользователя.
 	UpdateUser(ctx context.Context, user *model.UpdateUser) error
-	// DeleteUser - удалить пользователя
+
+	// DeleteUser - удаляет пользователя по его идентификатору.
 	DeleteUser(ctx context.Context, id int64) error
 }

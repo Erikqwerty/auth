@@ -2,11 +2,14 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/erikqwerty/erik-platform/clients/db"
 	"github.com/erikqwerty/erik-platform/clients/db/pg"
 	"github.com/erikqwerty/erik-platform/clients/db/transaction"
+	"github.com/erikqwerty/erik-platform/clients/kafka"
+	"github.com/erikqwerty/erik-platform/clients/kafka/producer"
 	"github.com/erikqwerty/erik-platform/closer"
 	"github.com/gomodule/redigo/redis"
 
@@ -23,11 +26,12 @@ import (
 )
 
 type serviceProvider struct {
-	pgConfig      config.PGConfig
-	grpcConfig    config.GRPCConfig
-	redisConfig   config.RedisConfig
-	httpConfig    config.HTTPConfig
-	swaggerConfig config.SwaggerConfig
+	pgConfig       config.PGConfig
+	grpcConfig     config.GRPCConfig
+	redisConfig    config.RedisConfig
+	httpConfig     config.HTTPConfig
+	swaggerConfig  config.SwaggerConfig
+	producerConfig config.KafkaProducerConfig
 
 	dbClient       db.Client
 	txManager      db.TxManager
@@ -36,6 +40,8 @@ type serviceProvider struct {
 
 	redisPool   *redis.Pool
 	redisClient cache.RedisClient
+
+	producer kafka.Producer
 
 	authService service.AuthService
 
@@ -112,6 +118,16 @@ func (s *serviceProvider) SwaggerConfig() config.SwaggerConfig {
 
 	return s.swaggerConfig
 }
+func (s *serviceProvider) KafkaProducerConfig() config.KafkaProducerConfig {
+	if s.producerConfig == nil {
+		cfg, err := env.NewProducerConfig()
+		if err != nil {
+			log.Fatalf("failed config kafka producer")
+		}
+		s.producerConfig = cfg
+	}
+	return s.producerConfig
+}
 
 // DBClient - создает клиента для подключения к базе данных
 func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
@@ -181,10 +197,21 @@ func (s *serviceProvider) UserCache() repository.UserCache {
 	return s.userCache
 }
 
+func (s *serviceProvider) ProducerClient() kafka.Producer {
+	if s.producer == nil {
+		producer, err := producer.NewProducer(s.KafkaProducerConfig().Brockers())
+		if err != nil {
+			fmt.Println(err) // ???
+		}
+		s.producer = producer
+	}
+	return s.producer
+}
+
 // AuthService - инициализирует сервисный слой сервиса auth
 func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 	if s.authService == nil {
-		s.authService = authservice.NewService(s.AuthRepository(ctx), s.TxManager(ctx), s.UserCache())
+		s.authService = authservice.NewService(s.AuthRepository(ctx), s.TxManager(ctx), s.UserCache(), s.ProducerClient())
 	}
 
 	return s.authService

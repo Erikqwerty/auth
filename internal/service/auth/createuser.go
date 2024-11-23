@@ -7,7 +7,7 @@ import (
 	"github.com/erikqwerty/auth/internal/model"
 )
 
-// Create - создание пользователя
+// Create - создаeт пользователя и записывает событие в kafka
 func (s *service) CreateUser(ctx context.Context, user *model.CreateUser) (int64, error) {
 	if user == nil {
 		return 0, autherrors.ErrCreateUserNil
@@ -44,6 +44,11 @@ func (s *service) CreateUser(ctx context.Context, user *model.CreateUser) (int64
 
 	if err != nil {
 		return 0, err
+	}
+
+	_, _, err = s.producer.SendMessage("CREATEUSER", user.Email)
+	if err != nil {
+		return id, err
 	}
 
 	return id, nil

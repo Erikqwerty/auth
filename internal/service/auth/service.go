@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/erikqwerty/erik-platform/clients/db"
+	"github.com/erikqwerty/erik-platform/clients/kafka"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/peer"
 
@@ -24,6 +25,7 @@ const (
 type service struct {
 	authRepository repository.AuthRepository
 	userCache      repository.UserCache
+	producer       kafka.Producer
 	txManager      db.TxManager
 }
 
@@ -31,12 +33,14 @@ type service struct {
 func NewService(
 	authRepository repository.AuthRepository,
 	txManager db.TxManager,
-	userCache repository.UserCache) dev.AuthService {
+	userCache repository.UserCache,
+	producer kafka.Producer) dev.AuthService {
 
 	return &service{
 		authRepository: authRepository,
 		userCache:      userCache,
 		txManager:      txManager,
+		producer:       producer,
 	}
 }
 
