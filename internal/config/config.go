@@ -18,12 +18,27 @@ type PGConfig interface {
 	DSN() string // DSN возвращает строку подключения к PostgreSQL
 }
 
+// HTTPConfig - интерфейс для конфигурации http gatawey
+type HTTPConfig interface {
+	Address() string
+}
+
+// SwaggerConfig - интерфейс для конфигурации swagger server
+type SwaggerConfig interface {
+	Address() string
+}
+
 // RedisConfig - определяет методы конфигурации redis
 type RedisConfig interface {
 	Address() string
 	ConnectionTimeout() time.Duration
 	MaxIdle() int
 	IdleTimeout() time.Duration
+}
+
+// KafkaProducerConfig - определяет методы конфигурации kafka Producer
+type KafkaProducerConfig interface {
+	Brockers() []string
 }
 
 // Load - Парсит файл и загружает переменные среды по указному пути

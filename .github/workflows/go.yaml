@@ -15,7 +15,7 @@ env:
   DB_REDIS_CONTAINER_NAME: "auth-cache-redis"
 
 jobs:
-  # Go Job - выполняет билд, тесты и линтинг кода
+  # Go Job - выполняет билд, тесты и линтинг кода.
   build-and-test:
     runs-on: ubuntu-latest
     steps:
@@ -63,14 +63,33 @@ jobs:
 
       - name: Create .env file for CI
         run: |
+
+          # Postgres
           echo "PG_DATABASE_NAME=auth" >> .env
           echo "PG_USER=${{ secrets.PG_USER }}" >> .env
           echo "PG_PASSWORD=${{ secrets.PG_PASSWORD }}" >> .env
           echo "PG_PORT=5432" >> .env
           echo "MIGRATION_DIR=./migrations" >> .env
+          echo "PG_DSN=host=$DB_CONTAINER_NAME port=5432 dbname=auth user=${{ secrets.PG_USER }} password=${{ secrets.PG_PASSWORD }} sslmode=disable" >> .env
+
+          # GRPC server
           echo "GRPC_HOST=0.0.0.0" >> .env
           echo "GRPC_PORT=50052" >> .env
-          echo "PG_DSN=host=$DB_CONTAINER_NAME port=5432 dbname=auth user=${{secrets.PG_USER}} password=${{secrets.PG_PASSWORD}} sslmode=disable" >> .env
+          
+          # Redis
+          echo "REDIS_HOST=0.0.0.0" >> .env
+          echo "REDIS_PORT=6379" >> .env
+          echo "REDIS_CONNECTION_TIMEOUT_SEC=5" >> .env
+          echo "REDIS_MAX_IDLE=10" >> .env
+          echo "REDIS_IDLE_TIMEOUT_SEC=300" >> .env
+
+          # http server
+          echo "HTTP_HOST=0.0.0.0" >> .env
+          echo "HTTP_PORT=8888" >> .env
+          
+          # swagger server
+          echo "SWAGGER_HOST=0.0.0.0" >> .env
+          echo "SWAGGER_PORT=8880" >> .env
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -116,7 +135,7 @@ jobs:
             docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
             docker stop $CONTAINER_NAME || true
             docker rm $CONTAINER_NAME || true
-            docker run -d -p 50052:50052 --network auth-service-network --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
+            docker run -d -p 50052:50052 -p 58888:8888 -p 58880:8880 --network auth-service-network --name $CONTAINER_NAME -t $REGISTRY/$IMAGE_NAME:$TAG_NAME
 
       - name: Ensure Database Container
         uses: appleboy/ssh-action@v1.0.0
@@ -155,6 +174,52 @@ jobs:
                 --network auth-service-network \
                 -v redis_data:/var/lib/redis/auth_data \
                 -p 127.0.0.1:56379:6379 redis:7.2.6-alpine
+            fi
+
+      - name: Deploy Kafka and Zookeeper
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: 33
+          script: |
+            if [ "$(docker ps -q -f name=zookeeper)" ]; then
+              echo "Zookeeper уже запущен"
+            else
+              docker run -d --name zookeeper \
+                --network auth-service-network \
+                -e ZOOKEEPER_CLIENT_PORT=2181 \
+                -e ZOOKEEPER_TICK_TIME=2000 \
+                -p 2181:2181 \
+                confluentinc/cp-zookeeper:7.6.1
+            fi
+
+            if [ "$(docker ps -q -f name=kafka)" ]; then
+              echo "Kafka уже запущен"
+            else
+              docker run -d --name kafka \
+                --network auth-service-network \
+                -e KAFKA_BROKER_ID=1 \
+                -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
+                -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT \
+                -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092 \
+                -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+                -e KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0 \
+                -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+                -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+                -p 9092:9092 \
+                confluentinc/cp-kafka:7.6.1
+            fi
+
+            if [ "$(docker ps -q -f name=kafka-ui)" ]; then
+              echo "Kafka UI уже запущен"
+            else
+              docker run -d --name kafka-ui \
+                --network auth-service-network \
+                -e DYNAMIC_CONFIG_ENABLED=true \
+                -p 8082:8080 \
+                provectuslabs/kafka-ui:v0.7.2
             fi
 
       - name: Run Migrator

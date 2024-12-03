@@ -10,10 +10,6 @@ import (
 
 // DeleteUser - обрабатывает получаемый запрос от клиента gRPC на удаление пользователя
 func (i *ImplServAuthUser) DeleteUser(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
-	if err := ValidateRequest(req); err != nil {
-		return nil, err
-	}
-
 	err := i.authService.DeleteUser(ctx, req.Id)
 	if err != nil {
 		return nil, err

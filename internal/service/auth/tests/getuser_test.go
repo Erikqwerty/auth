@@ -8,6 +8,8 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/erikqwerty/erik-platform/clients/db"
 	dbMock "github.com/erikqwerty/erik-platform/clients/db/mocks"
+	"github.com/erikqwerty/erik-platform/clients/kafka"
+	kafkaMock "github.com/erikqwerty/erik-platform/clients/kafka/mocks"
 	"github.com/gojuno/minimock/v3"
 	"github.com/stretchr/testify/require"
 
@@ -24,6 +26,7 @@ func TestGetUser(t *testing.T) {
 	type authRepoMockFunc func(mc *minimock.Controller) repository.AuthRepository
 	type txManagerMockFunc func(mc *minimock.Controller) db.TxManager
 	type userCacheMockFunc func(mc *minimock.Controller) repository.UserCache
+	type kafkaProducerMockFunc func(mc *minimock.Controller) kafka.Producer
 
 	type args struct {
 		ctx context.Context
@@ -55,13 +58,14 @@ func TestGetUser(t *testing.T) {
 	)
 
 	tests := []struct {
-		name              string
-		args              args
-		want              *model.UserInfo
-		err               error
-		dbMockFunc        txManagerMockFunc
-		authRepoMockFunc  authRepoMockFunc
-		userCacheMockFunc userCacheMockFunc
+		name                  string
+		args                  args
+		want                  *model.UserInfo
+		err                   error
+		dbMockFunc            txManagerMockFunc
+		authRepoMockFunc      authRepoMockFunc
+		userCacheMockFunc     userCacheMockFunc
+		kafkaProducerMockFunc kafkaProducerMockFunc
 	}{
 		{
 			name: "service get user info success case",
@@ -99,6 +103,9 @@ func TestGetUser(t *testing.T) {
 
 				return mock
 			},
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
+				return kafkaMock.NewProducerMock(t)
+			},
 		},
 		{
 			name: "service get user info error case",
@@ -129,6 +136,9 @@ func TestGetUser(t *testing.T) {
 
 				return mock
 			},
+			kafkaProducerMockFunc: func(_ *minimock.Controller) kafka.Producer {
+				return kafkaMock.NewProducerMock(t)
+			},
 		},
 	}
 
@@ -139,8 +149,9 @@ func TestGetUser(t *testing.T) {
 			authRepoMock := tt.authRepoMockFunc(mc)
 			txManagerMock := tt.dbMockFunc(mc)
 			cacheMock := tt.userCacheMockFunc(mc)
+			kafkaProducerMock := tt.kafkaProducerMockFunc(mc)
 
-			service := auth.NewService(authRepoMock, txManagerMock, cacheMock)
+			service := auth.NewService(authRepoMock, txManagerMock, cacheMock, kafkaProducerMock)
 
 			user, err := service.GetUser(tt.args.ctx, tt.args.req)
 

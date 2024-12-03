@@ -2,23 +2,66 @@ syntax = "proto3";
 
 package userapi_v1;  
 
+import "google/api/annotations.proto";  
 import "google/protobuf/empty.proto";       
 import "google/protobuf/timestamp.proto";  
-import "google/protobuf/wrappers.proto";   
+import "google/protobuf/wrappers.proto";
+import "protoc-gen-openapiv2/options/annotations.proto"; 
+import "validate/validate.proto";
+
 
 option go_package = "github.com/erikqwerty/auth/pkg/userapi_v1;userapi_v1";  
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Note API"
+    version: "1.0.0"
+    contact: {
+      name: "Erik Kocharuan"
+      email: "erik@mail.ru"
+    };
+  };
+
+  host: "localhost:8888",
+  schemes: HTTP,
+  schemes: HTTPS,
+  consumes: "application/json",
+  produces: "application/json",
+};
+
 
 // Определение сервиса UserAPIV1, который содержит 
 // основные RPC методы для управления пользователями
 service UserAPIV1 {
   // Метод для создания нового пользователя
-  rpc CreateUser(CreateRequest) returns (CreateResponse); 
-  // Метод для получения данных пользователя       
-  rpc GetUserInfo(GetRequest) returns (GetResponse);     
-  // Метод для обновления данных пользователя           
-  rpc UpdateUserInfo(UpdateRequest) returns (google.protobuf.Empty);
-  // Метод для удаления пользователя 
-  rpc DeleteUser(DeleteRequest) returns (google.protobuf.Empty);
+  rpc CreateUser(CreateRequest) returns (CreateResponse) {
+    option (google.api.http) = {
+      post: "/auth/v1/create"
+      body: "*"
+    };
+  }
+
+  // Метод для получения данных пользователя
+  rpc GetUserInfo(GetRequest) returns (GetResponse) {
+    option (google.api.http) = {
+      get: "/auth/v1"
+    };
+  }
+
+  // Метод для обновления данных пользователя
+  rpc UpdateUserInfo(UpdateRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      patch: "/auth/v1"
+      body: "*"
+    };
+  }
+
+  // Метод для удаления пользователя
+  rpc DeleteUser(DeleteRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/auth/v1"
+    };
+  }
 }
 
 // Role - перечисление ролей пользователя
@@ -30,13 +73,16 @@ enum Role {
 
 // Сообщение запроса для метода Create (создание пользователя)
 message CreateRequest {
-  string name = 1;                // Имя пользователя
-  
+  // Имя пользователя
+  string name = 1 [(validate.rules).string.min_len = 1];              
   // Email пользователя (уникальный для аутентификации)
-  string email = 2;         
-  string password = 3;           // Пароль пользователя
-  string password_confirm = 4;   // Подтверждение пароля
-  Role role = 5;                 // Роль пользователя (USER или ADMIN)
+  string email = 2 [(validate.rules).string.email = true];     
+  // Пароль пользователя
+  string password = 3 [(validate.rules).string.min_len = 4];
+  // Подтверждение пароля           
+  string password_confirm = 4 [(validate.rules).string.min_len = 4];  
+  // Роль пользователя (USER или ADMIN)
+  Role role = 5 [(validate.rules).enum.defined_only = true];             
 }
 
 // Сообщение ответа для метода Create (создание пользователя)
@@ -46,7 +92,8 @@ message CreateResponse {
 
 // Сообщение запроса для метода Get (получение данных пользователя)
 message GetRequest {
-  string email = 1;  // email пользователя, данные которого нужно получить
+  // email пользователя, данные которого нужно получить
+  string email = 1 [(validate.rules).string.email = true];  
 }
 
 // Сообщение ответа для метода Get (получение данных пользователя)
@@ -65,18 +112,15 @@ message GetResponse {
 // Сообщение запроса для метода Update (обновление данных пользователя)
 message UpdateRequest {
   // Идентификатор пользователя, данные которого нужно обновить
-  string email = 1;
+  string email = 1 [(validate.rules).string.email = true];
   // Имя пользователя (обновляется при необходимости)                     
-  google.protobuf.StringValue name = 2; 
-
-  // Email пользователя (обновление закомментировано не безопасно)
-  // google.protobuf.StringValue email = 3;
-
+  google.protobuf.StringValue name = 2 [(validate.rules).string.min_len = 1]; 
   // Роль пользователя (USER или ADMIN)
-  Role role = 4;                    
+  Role role = 4 [(validate.rules).enum.defined_only = true];                    
 }
 
 // Сообщение запроса для метода Delete (удаление пользователя)
 message DeleteRequest {
-  int64 id = 1; // Идентификатор пользователя, которого нужно удалить
+  // Идентификатор пользователя, которого нужно удалить
+  int64 id = 1 [(validate.rules).int64.gt = 0]; 
 }

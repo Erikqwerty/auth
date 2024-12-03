@@ -1,4 +1,4 @@
-package tests
+package interceptor
 
 import (
 	"testing"
@@ -6,7 +6,6 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/require"
 
-	"github.com/erikqwerty/auth/internal/api"
 	"github.com/erikqwerty/auth/internal/autherrors"
 	desc "github.com/erikqwerty/auth/pkg/userapi_v1"
 )
@@ -130,7 +129,7 @@ func TestValidateRequest(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := api.ValidateRequest(tt.req)
+			err := ValidateRequest(tt.req)
 			if tt.wantErr != nil {
 				require.Error(t, err)
 				require.Equal(t, tt.wantErr, err)
